@@ -1,8 +1,3 @@
-/**
- * 
- * 
- * 
- **/
 
 (function($, owner) {
 	$.init({
@@ -14,10 +9,6 @@
 	document.write("<script language=javascript src='js/md5.js'></script>");
 
 	var serverUrl = "http://365gateway.lanyukj.cn/public/index.php";
-	//	var serverUrl = 'http://365gateway.0470365.com/public/index.php';
-	// var ipUrl = 'http://members.3322.org/dyndns/getip';
-
-	// var imageServerUrl = 'https://365image.lanyukj.cn/index.php/Upload/jzUpload';
 
 	Date.prototype.format = function(fmt) {
 		var o = {
@@ -80,9 +71,11 @@
 		obj.show = {
 			aniShow: 'pop-in'
 		};
-// 		if(obj.style){
-// 			 obj.style.bounce = 'vertical';
-// 		}
+		if(obj.styles && obj.styles.titleNView){
+			obj.styles.titleNView.autoBackButton = true;
+			obj.styles.titleNView.titleColor = '#FFFFFF';
+			obj.styles.titleNView.backgroundColor = '#FF0000';
+		}
 		if(obj.waiting) {
 			obj.waiting.options = {
 				background: 'rgba(255,255,255, 0)'
@@ -148,29 +141,6 @@
 			color: "rgba(0,0,0,1)"
 		})
 	}
-
-	//	//获取公网IP地址
-	//	getIp = function() {
-	//		mui.ajax(ipUrl, {
-	//			dataType: 'json',
-	//			type: 'get', //HTTP请求类型
-	//			timeout: 10000, //超时时间设置为10秒；
-	//			headers: {
-	//				'Content-Type': 'application/json'
-	//			},
-	//			success: function(data) {
-	//				if(data) {
-	//					console.log(data);
-	//					return data;
-	//				}
-	//			},
-	//			error: function(xhr, type, errorThrown) {
-	//				//异常处理；
-	//				console.log(type);
-	//				return;
-	//			}
-	//		});
-	//	}
 
 	/**
 	 * 用户登录

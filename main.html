@@ -72,10 +72,10 @@
 				<div id="text1">累计总收入</div>
 				<div id="income">0 元</div>
 				<div class="mui-row" id="count">
-					<div class="mui-col-sm-6 mui-col-xs-6">
-						累计接单n次
+					<div class="mui-col-sm-6 mui-col-xs-6" id="all">
+						累计接单0次
 					</div>
-					<div class="mui-col-sm-6 mui-col-xs-6">
+					<div class="mui-col-sm-6 mui-col-xs-6" id="today">
 						今日收入0元
 					</div>
 				</div>
@@ -84,13 +84,13 @@
 				<div class="mui-row">
 					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_order">
 					</div>
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_income">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_income" onclick="toIncome()">
 					</div>
 				</div>
 				<div class="mui-row">
 					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_profile" onclick="toProfile()">
 					</div>
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="contact_service">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="contact_service" onclick="dial()">
 					</div>
 				</div>
 			</div>
@@ -108,17 +108,61 @@
 					id: 'my_profile.html',
 					styles: {
 						titleNView: {
-							autoBackButton: true,
 							titleText: '我的资料',
-							titleColor: '#FFFFFF',
-							backgroundColor: '#FF0000',
 							buttons: [{
 								color: 'white',
 								text: '编辑',
+								onclick: goEditProfile
 							}]
 						}
 					}
 				});
+			}
+			
+			function goEditProfile(){
+				mui.openWindow({
+					url: 'edit_profile.html',
+					id: 'edit_profile.html',
+					styles: {
+						titleNView: {
+							titleText: '会员信息'
+						}
+					}
+				})
+			}
+			
+			function dial(){
+				plus.device.dial('04708336500', false);
+			}
+			
+			function getStatistics(){
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var user_id = loginData.data.info.user_id;
+				var statisticsParam = {
+					service: 'Jsapp.Member.GetStaffPriceCount',
+					jce_id: user_id
+				}
+				wAjax(statisticsParam, function(result){
+					var info = result.data.info;
+					document.getElementById('income').innerHTML = info.countPrice + " 元";
+					document.getElementById('all').innerHTML = '累计接单' +  info.orderCount + '次';
+					document.getElementById('today').innerHTML = '今日收入' + info.day_price + '元';
+				})
+			}
+			
+			function toIncome(){
+				mui.openWindow({
+					url: 'my_income.html',
+					id: 'my_income.html',
+					styles: {
+						titleNView: {
+							titleText: '我的收入'
+						}
+					}
+				})
 			}
 		</script>
 	</body>

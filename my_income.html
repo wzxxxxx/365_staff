@@ -1,0 +1,78 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			.hasborder{
+				border-right-style: dashed;
+				border-right-width: 2px;
+			}
+			.mui-content{
+				padding-top: 20px;
+			}
+			.mui-table-view{
+				margin-top: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-row">
+				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center hasborder" >
+					<h1>0</h1>
+					
+					<!--<span class="fengeline">|</span>-->
+				</div>
+				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center hasborder" >
+					<h1>0</h1>
+					<!--<span class="fengeline">|</span>-->
+				</div>
+				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center" >
+					<h1>0</h1>
+				</div>
+			</div>
+			<div class="mui-row">
+				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center " >
+					<div>今日收入(元)</div>
+				</div>
+				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center " >
+					<div>本月收入(元)</div>
+				</div>
+				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center" >
+					<div>总收入(元)</div>
+				</div>
+			</div>
+			<ul class="mui-table-view"> 
+        <li class="mui-table-view-cell mui-collapse">
+            <a class="mui-navigate-right" href="#">面板1</a>
+            <div class="mui-collapse-content">
+                <div class="mui-row">
+				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
+					<div>订单商家</div>
+				</div>
+				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
+					<div>订单编号</div>
+				</div>
+				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
+					<div>收入金额</div>
+				</div>
+				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
+					<div>结算状态</div>
+				</div>
+			</div>
+            </div>
+        </li>
+    </ul>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript">
+			mui.init()
+		</script>
+	</body>
+
+</html>

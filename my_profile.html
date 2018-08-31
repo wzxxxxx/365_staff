@@ -56,13 +56,16 @@
 				width: 80px;
 				height: 80px;
 			}
-			.first-ul{
+			
+			.first-ul {
 				margin-top: -25px;
 			}
-			.first-ul .mui-navigate-right:after{
+			
+			.first-ul .mui-navigate-right:after {
 				display: none!important;
 			}
-			span.mui-navigate-right{
+			
+			span.mui-navigate-right {
 				color: gray;
 			}
 		</style>
@@ -76,17 +79,17 @@
 			</div>
 			<ul class="mui-table-view first-ul">
 				<li class="mui-table-view-cell">
-					<a  class="mui-navigate-right">
+					<a class="mui-navigate-right">
 						姓名<span class="mui-pull-right mui-navigate-right" id="user_name"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a  class="mui-navigate-right">
+					<a class="mui-navigate-right">
 						性别<span class="mui-pull-right mui-navigate-right" id="user_sex"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
-					<a  class="mui-navigate-right">
+					<a class="mui-navigate-right">
 						出生日期<span class="mui-pull-right mui-navigate-right" id="user_birthday"></span>
 					</a>
 				</li>
@@ -98,7 +101,7 @@
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a id="changePwd" class="mui-navigate-right">
+					<a id="changePwd" class="mui-navigate-right" onclick="goChangePsw()">
 						修改密码
 					</a>
 				</li>
@@ -106,7 +109,7 @@
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a id="aboutus" class="mui-navigate-right">
+					<a id="aboutus" class="mui-navigate-right" onclick="goAboutUs()">
 						关于我们
 					</a>
 				</li>
@@ -114,7 +117,7 @@
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a id="clearCache" class="mui-navigate-right">
+					<a id="clearCache" class="mui-navigate-right" onclick="clearCache()">
 						清除缓存
 					</a>
 				</li>
@@ -130,7 +133,7 @@
 			</ul>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript">
 			mui.plusReady(function() {
 				var loginData = JSON.parse(localStorage.getItem('login'));
@@ -139,14 +142,77 @@
 				}
 				mbi_number = loginData.data.info.user_number;
 				getStaffInfo(mbi_number);
+
+				initCacheSize();
+
 			})
+
+			function clearCache() {
+				var loginData = localStorage.getItem('login');
+				var tokenData = localStorage.getItem('token');
+				plus.cache.clear(function() {
+					plus.nativeUI.toast("缓存已清除");
+					initCacheSize();
+					localStorage.setItem('login', loginData);
+					localStorage.setItem('token', tokenData);
+				})
+			}
+
+			function initCacheSize() {
+				plus.cache.calculate(function(size) {
+					document.getElementById('clearCache').innerHTML = '清除缓存 (' + formatSize(size) + ')';
+				})
+			}
 			
-			function getStaffInfo(mbi_number){
+			function formatSize(size) {
+				var fileSizeString;
+				size = parseInt(size);
+				if(size == 0) {
+					fileSizeString = "0B";
+				} else if(size < 1024) {
+					fileSizeString = size + "B";
+				} else if(size < 1048576) {
+					fileSizeString = (size / 1024).toFixed(2) + "KB";
+				} else if(size < 1073741824) {
+					console.log("Mb" + size);
+					fileSizeString = (size / 1048576).toFixed(2) + "MB";
+					console.log("/ after" + fileSizeString);
+				} else {
+					fileSizeString = (size / 1073741824).toFixed(2) + "GB";
+				}
+				return fileSizeString;
+			}
+
+			function goAboutUs() {
+				mui.openWindow({
+					url: "about_us.html",
+					id: "about_us.html",
+					styles: {
+						titleNView: {
+							titleText: '关于我们'
+						}
+					}
+				});
+			}
+
+			function goChangePsw() {
+				mui.openWindow({
+					url: "change_password.html",
+					id: "change_password.html",
+					styles: {
+						titleNView: {
+							titleText: '修改密码'
+						}
+					}
+				});
+			}
+
+			function getStaffInfo(mbi_number) {
 				var staffParam = {
 					service: 'Jsapp.Member.GetInfoByUserNumber',
 					mbi_number: mbi_number
 				};
-				wAjax(staffParam, function(result){
+				wAjax(staffParam, function(result) {
 					var info = result.data.info;
 					document.getElementById('user_name').innerHTML = info.mei_real_name;
 					document.getElementById('name').innerHTML = info.mei_real_name || '未命名';
