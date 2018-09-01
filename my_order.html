@@ -1,0 +1,104 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			/*.mui-segmented-control-positive.mui-segmented-control-inverted .mui-control-item.mui-active{
+				color: #FF6C00;
+				border-bottom: 2px solid #FF6C00;
+				background: 0 0;
+			}*/
+		
+			.mui-slider-indicator {
+				background: white;
+				height: 40px;
+				
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<div class="mui-slider-indicator mui-segmented-control mui-segmented-control-inverted mui-segmented-control-positive">
+				<div class="mui-scroll">
+					<a class="mui-control-item  mui-active" data-wid="order_sub1.html">待处理</a>
+					<a class="mui-control-item" data-wid="order_sub2.html">已完成</a>
+				</div>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/webviewGroup.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function(){
+				getOrderList();
+			});
+
+			function getOrderList() {
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var staff_id = loginData.data.info.staff_id;
+				var getOrderParam = {
+					service: 'Orders.Order.GetListByStaff',
+					os_staff_id: staff_id,
+					firstRow: 1,
+					listRows: 10
+				};
+				wAjax(getOrderParam, function(result) {
+					var list = result.data.list;
+					initSubpages(list);
+				});
+			}
+
+			function initSubpages(data) {
+				var self = plus.webview.currentWebview();
+				var group = new webviewGroup(self.id, {
+					items: [{
+						id: "order_sub1.html",
+						url: "order_sub1.html",
+						extras: {
+							list: data
+						},
+						styles: {
+							top: '90px'
+						}
+					}, {
+						id: "order_sub2.html",
+						url: "order_sub2.html",
+						extras: {
+							list: data
+						},
+						styles: {
+							top: '90px'
+						}
+					}],
+					onChange: function(obj) {
+						var c = document.querySelector(".mui-control-item.mui-active");
+						if(c) {
+							c.classList.remove("mui-active");
+						}
+						var target = document.querySelector(".mui-scroll .mui-control-item:nth-child(" + (parseInt(obj.index) + 1) + ")");
+						target.classList.add("mui-active");
+						if(target.scrollIntoView) {
+							target.scrollIntoView();
+						}
+					}
+				});
+
+				mui(".mui-scroll").on("tap", ".mui-control-item", function(e) {
+					var wid = this.getAttribute("data-wid");
+					group.switchTab(wid);
+				});
+
+			}
+		</script>
+	</body>
+
+</html>

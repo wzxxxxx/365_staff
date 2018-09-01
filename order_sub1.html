@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+			#mui-template {
+				background: #F2F2F2;
+			}
+			
+			.display-none {
+				display: none;
+			}
+			
+			img {
+				height: 20px;
+				width: 20px;
+				margin-top: 15px;
+				margin-left: 10px;
+				margin-right: 10px;
+				margin-bottom: -3px;
+			}
+			
+			.mui-scroll .mui-content {
+				background: white;
+				margin-bottom: 10px;
+				height: 120px;
+				padding: 10px;
+			}
+			
+			.status {
+				color: red;
+				font-size: 15px;
+			}
+			
+			.mui-btn {
+				border: none;
+			}
+			
+			#item1_1_null {
+				height: 100%;
+				background: #efeff4;
+				padding-top: 150px;
+			}
+			
+			#item1_1_null img {
+				width: 100px;
+				height: 100px;
+			}
+			
+			#pullrefresh {
+				background: #efeff4;
+			}
+			
+			#shijian {
+				color: gray;
+				margin-left: 20px;
+				font-size: 16px;
+			}
+			
+			#addr {
+				margin-top: 10px;
+				font-size: 16px;
+			}
+			
+			#company {
+				color: gray;
+				margin-top: 10px;
+				font-size: 14px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content mui-scroll-wrapper" id="pullrefresh">
+			<div class="mui-scroll">
+				<div id="mui-template">
+					<script type="text/template" id="temp">
+						<% for(var i in record){ var item=record[i]; %>
+						<% if(item.ob_status==6 || item.ob_status==7){%>
+						<div class="mui-content" id="<%=item.ob_id%>">
+							<div>
+								<span>
+                                        <%=item.user_contacts_name%>
+                                    </span>
+								<span id="shijian"><%=item.user_predict_work_time%></span>
+								<% if(item.ob_status==6 || item.ob_status == 7){%>
+								<div class="mui-pull-right status">待评价</div>
+								<%} else if(item.ob_status==5){%>
+								<div class="mui-pull-right status">用户待付款</div>
+								<%} else if(item.ob_status==14 || item.ob_status==8){%>
+								<div class="mui-pull-right status">已完成</div>
+								<%} else if(item.ob_status==1 || item.ob_status==2){%>
+								<div class="mui-pull-right status">待服务</div>
+								<%} else if(item.ob_status==12 || item.ob_status==13){%>
+								<div class="mui-pull-right status">已取消</div>
+								<%}%>
+							</div>
+							<div id="addr">
+								<%=item.user_contacts_province_name%>
+								<%=item.user_contacts_city_name%>
+								<%=item.user_contacts_county_name%>
+								<%=item.user_contacts_address%>
+							</div>
+							<div id="company">
+								<%=item.company_name%>
+							</div>
+						</div>
+						<%}%>
+						<%}%>
+					</script>
+
+				</div>
+
+			</div>
+
+			<div id="item1_1_null" class="mui-text-center">
+				<img src="images/normal_no_data.png" />
+				<p>暂无内容</p>
+			</div>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript" src="js/arttmpl.js"></script>
+		<script type="text/javascript">
+			mui.init({
+				pullRefresh: {
+					container: '#pullrefresh',
+					down: {
+						style: 'circle', //必选，下拉刷新样式，目前支持原生5+ ‘circle’ 样式
+						auto: false, //可选,默认false.首次加载自动上拉刷新一次
+						callback: pulldownRefresh //必选，刷新函数，根据具体业务来编写，比如通过ajax从服务器获取新数据；
+					},
+					up: {
+						auto: false,
+						contentinit: '',
+						contentdown: '',
+						contentrefresh: '正在加载...',
+						callback: pullupRefresh
+					}
+				}
+			});
+
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				var list = self.list || [];
+				fillData(list, true);
+				var webview_detail = mui.preload({
+					url: 'order_detail.html',
+					id: 'order_detail.html',
+					styles: {
+						render: "always", //一直渲染
+						popGesture: "hide",
+						titleNView: {
+							titleText: '	订单详情',
+							backgroundColor: '#FF0000',
+							autoBackButton: true,
+							titleColor: '#FFFFFF'
+						}
+					}
+				});
+
+				mui("#mui-template").on('tap', '.mui-content', function(e) {
+					var id = this.getAttribute("id");
+					if(id) {
+						webview_detail.show('pop-in', 300);
+						//											mui.openWindow({
+						//												url: 'order_detail.html',
+						//												id: 'order_detail.html',
+						//												extras: {
+						//													ar_id: id
+						//												}
+						//											});
+					}
+				});
+
+			})
+
+			function fillData(list, isDown) {
+				for(var i = 0; i < list.length; i++) {
+					list[i].user_predict_work_time = new Date(list[i].user_predict_work_time * 1000).toLocaleString();
+					list[i].ob_time = new Date(list[i].ob_time * 1000).toLocaleString();
+				}
+				var str = template('temp', {
+					"record": list
+				});
+
+				isDown ? pageIndex = 2 : (str.trim() && pageIndex++);
+				document.getElementById('item1_1_null').hidden = pageIndex - 2 || str.trim();
+				isDown ? document.getElementById("mui-template").innerHTML = str : document.getElementById("mui-template").insertAdjacentHTML('beforeend', str);
+				!isDown && list.length < 10 ? mui('#pullrefresh').pullRefresh().endPullupToRefresh(true) : mui('#pullrefresh').pullRefresh().endPullupToRefresh();
+				isDown && document.getElementById('item1_1_null').hidden ? mui('#pullrefresh').pullRefresh().enablePullupToRefresh() : mui(
+					'#pullrefresh').pullRefresh().disablePullupToRefresh();
+			}
+
+			function getOrder(isDown) {
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var staff_id = loginData.data.info.staff_id;
+				var getOrderParam = {
+					service: 'Orders.Order.GetListByStaff',
+					os_staff_id: staff_id,
+					firstRow: isDown ? 1 : pageIndex,
+					listRows: 10
+				};
+				wAjax(getOrderParam, function(result) {
+					var list = result.data.list;
+					fillData(list, isDown);
+				});
+			}
+
+			//     	function getOrder(isDown) {
+			//     		var loginData = JSON.parse(localStorage.getItem('login'));
+			//     		var mbi_number = loginData.data.info.mbi_id;
+			//     		var orderParam = {
+			//     			service: 'Hlbr365app.Member.GetMyOrderList',
+			//     			mbi_number: mbi_number,
+			//     			firstRow: isDown ? 1 : pageIndex,
+			//     			listRows: 10
+			//     		};
+			//     		wAjax(orderParam, function(result) {
+			//     			var list = result.data.list;
+			//     			fillData(list, isDown);
+			//     		});
+			//     	}
+
+			var pageIndex = 2;
+
+			function pullupRefresh() {
+				setTimeout(function() {
+					getOrder(false);
+				}, 500);
+			}
+
+			function pulldownRefresh() {
+				mui('#pullrefresh').pullRefresh().refresh(true);
+				setTimeout(function() {
+					getOrder(true);
+					mui('#pullrefresh').pullRefresh().endPulldownToRefresh();
+					mui.toast('刷新成功!');
+				}, 500)
+
+			}
+
+			mui("#mui-template").on('tap', '.mui-content', function(e) {
+				var order_id = this.getAttribute("id");
+				mui.openWindow({
+					url: 'order_detail.html',
+					id: 'order_detail.html',
+					extras: {
+						order_id: order_id
+					}
+				})
+
+			});
+		</script>
+	</body>
+
+</html>

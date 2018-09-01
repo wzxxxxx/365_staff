@@ -7,15 +7,22 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<style>
-			.hasborder{
+			.hasborder {
 				border-right-style: dashed;
 				border-right-width: 2px;
 			}
-			.mui-content{
+			
+			.mui-content {
 				padding-top: 20px;
 			}
-			.mui-table-view{
+			
+			.mui-table-view {
 				margin-top: 10px;
+			}
+			
+			h6 {
+				margin-top: 20px;
+				color: black;
 			}
 		</style>
 	</head>
@@ -23,56 +30,101 @@
 	<body>
 		<div class="mui-content">
 			<div class="mui-row">
-				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center hasborder" >
+				<div class="mui-col-sm-4 mui-col-xs-4 mui-text-center hasborder">
 					<h1>0</h1>
-					
-					<!--<span class="fengeline">|</span>-->
 				</div>
-				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center hasborder" >
+				<div class="mui-col-sm-4 mui-col-xs-4 mui-text-center hasborder">
 					<h1>0</h1>
-					<!--<span class="fengeline">|</span>-->
 				</div>
-				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center" >
+				<div class="mui-col-sm-4 mui-col-xs-4 mui-text-center">
 					<h1>0</h1>
 				</div>
 			</div>
 			<div class="mui-row">
-				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center " >
+				<div class="mui-col-sm-4 mui-col-xs-4 mui-text-center ">
 					<div>今日收入(元)</div>
 				</div>
-				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center " >
+				<div class="mui-col-sm-4 mui-col-xs-4 mui-text-center ">
 					<div>本月收入(元)</div>
 				</div>
-				<div  class="mui-col-sm-4 mui-col-xs-4 mui-text-center" >
+				<div class="mui-col-sm-4 mui-col-xs-4 mui-text-center">
 					<div>总收入(元)</div>
 				</div>
 			</div>
-			<ul class="mui-table-view"> 
-        <li class="mui-table-view-cell mui-collapse">
-            <a class="mui-navigate-right" href="#">面板1</a>
-            <div class="mui-collapse-content">
-                <div class="mui-row">
-				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
-					<div>订单商家</div>
-				</div>
-				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
-					<div>订单编号</div>
-				</div>
-				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
-					<div>收入金额</div>
-				</div>
-				<div  class="mui-col-sm-3 mui-col-xs-3 mui-text-center " >
-					<div>结算状态</div>
-				</div>
-			</div>
-            </div>
-        </li>
-    </ul>
-		</div>
-		<script src="js/mui.min.js"></script>
-		<script type="text/javascript">
-			mui.init()
-		</script>
-	</body>
+			<ul class="mui-table-view" id="mui-template">
+				<script type="text/template" id="temp">
+					<% for(var i in record){ var item=record[i]; %>
+					<li class="mui-table-view-cell mui-collapse mui-active">
+						<a class="mui-navigate-right" href="#">
+							<%=item.op_pay_time%>
+						</a>
+						<% for(var i in record){ var item2=record[i]; %>
+						<% if(item2.op_pay_time == item.op_pay_time){%>
+						<div class="mui-collapse-content">
+							<div class="mui-row">
+								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
+									<h5>订单商家</h5>
+									<h6>
+                                                <%=item2.company_name%>
+                                            </h6>
+								</div>
+								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
+									<h5>订单编号</h5>
+									<h6>
+                                                <%=item2.ob_number%>
+                                            </h6>
+								</div>
+								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
+									<h5>收入金额</h5>
+									<h6>
+                                                <%=item2.op_actual_price%>
+                                            </h6>
+								</div>
+								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
+									<h5>结算状态</h5>
+									<h6>未结算 </div>
+                                    </div>
+									<%}%>
+ 								<%}%>
+                    </li>
+                    <%}%>
+                            </li>
+            </script>
+        </ul>
+        </div>
+        <script src="js/mui.min.js"></script>
+        <script type="text/javascript" src="js/arttmpl.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+        <script type="text/javascript">
+            mui.plusReady(function () {
+                getIncomeList();
+            })
+
+            function getIncomeList() {
+                var loginData = JSON.parse(localStorage.getItem('login'));
+                if (!loginData) {
+                    return;
+                }
+                staff_id = loginData.data.info.staff_id;
+                var incomeParam = {
+                    service: 'Orders.Order.GetPriceByStaff',
+                    os_staff_id: staff_id,
+                    firstRow: 1,
+                    listRows: 10
+
+                }
+                wAjax(incomeParam, function (result) {
+                    var list = result.data.list;
+                    for (var i in list) {
+                        list[i].op_pay_time = new Date(1000 * list[i].op_pay_time).format("yyyy-MM-dd");
+                    }
+                    var str = template('temp', {
+                        "record": list
+                    });
+                    document.getElementById("mui-template").innerHTML = str;
+                });
+            }
+        </script>
+</body>
 
 </html>

@@ -65,7 +65,7 @@
 	<body>
 		<header class="mui-bar mui-bar-nav">
 			<h1 class="mui-title"></h1>
-			<button id='setting' class=" mui-pull-right mui-btn-link">消息</button>
+			<button id="setting" class=" mui-pull-right mui-btn-link">消息</button>
 		</header>
 		<div class="mui-content">
 			<div id="top" class="mui-text-center">
@@ -82,7 +82,7 @@
 			</div>
 			<div class="middle">
 				<div class="mui-row">
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_order">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_order" onclick="toOrders()">
 					</div>
 					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_income" onclick="toIncome()">
 					</div>
@@ -114,6 +114,18 @@
 								text: '编辑',
 								onclick: goEditProfile
 							}]
+						}
+					}
+				});
+			}
+			
+			function toOrders(){
+				mui.openWindow({
+					url: 'my_order.html',
+					id: 'my_order.html',
+					styles: {
+						titleNView: {
+							titleText: '我的订单'
 						}
 					}
 				});

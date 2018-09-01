@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+		<link href="css/mui.min.css" rel="stylesheet" />
+		<style>
+				.mui-table-view {
+				background: #efeff4;
+				width: 95%;
+				margin-left: 10px;
+				-webkit-box-shadow: 0 0 5px antiquewhite;
+				-moz-box-shadow: 0 0 5px antiquewhite;
+				box-shadow: 0 0 5px antiquewhite;
+			}
+			
+			.mui-table-view:before {
+				height: 0;
+			}
+			
+			.mui-table-view:after {
+				height: 0;
+			}
+			
+			.mui-table-view-cell{
+				background: white;
+			}
+			
+			.mui-table-view-cell:after {
+				right: 15px;
+				left: 15px;
+			}
+			.bg {
+				background: url(images/ic_two_bg3.png) no-repeat;
+				background-size: cover;
+				height: 160px;
+				padding-top: 20px;
+				margin: 0 -10px;
+			}
+			
+			.span-center {
+				width: 100%;
+				float: left;
+				text-align: center;
+				color: white;
+			}
+			#avatar {
+				clear: both;
+				display: block;
+				margin: auto;
+				border-radius: 40px;
+				width: 80px;
+				height: 80px;
+			}
+			.lastli{
+				border-bottom-left-radius: 10px;
+				border-bottom-right-radius: 10px;
+				color: #FF6C00;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div class="mui-content">
+			<ul class="mui-table-view">
+				<div class="mui-content bg">
+				<img src="images/ic_sex_men.png" id="avatar" />
+				<span class="span-center" id="name"></span>
+				</div>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						预约时间<span class="mui-pull-right mui-navigate-right" id="user_name"></span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						服务项目<span class="mui-pull-right mui-navigate-right" id="user_sex"></span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right">
+						地址<span class="mui-pull-right mui-navigate-right" id="user_birthday"></span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="youhuiquan" class="mui-navigate-right">
+						手机<span class="mui-pull-right mui-navigate-right" id="user_mobile"></span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="youhuiquan" class="mui-navigate-right">
+						客户备注<span class="mui-pull-right mui-navigate-right" id="user_mobile"></span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell">
+					<a id="youhuiquan" class="mui-navigate-right">
+						支付方式<span class="mui-pull-right mui-navigate-right" id="user_mobile"></span>
+					</a>
+				</li>
+				<li class="mui-table-view-cell lastli">
+					<a id="youhuiquan" class=" mui-text-center">
+						已支付0.01元
+					</a>
+				</li>
+			</ul>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript">
+			//重写返回逻辑，返回时隐藏详情页webview
+mui.back = function() {
+    plus.webview.currentWebview().hide("auto", 300);
+}
+//窗口隐藏时，重置页面数据
+mui.plusReady(function () {
+    var self = plus.webview.currentWebview();
+    self.addEventListener("hide",function (e) {
+        window.scrollTo(0, 0);//重置滚动条位置
+//      vm.resetData();//重置页面数据
+    },false);
+})
+		</script>
+	</body>
+
+</html>

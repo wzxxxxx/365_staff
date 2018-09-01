@@ -200,7 +200,9 @@
 					"js/app.js"
 				],
 				"refer": [
-					"setting.html"
+					"setting.html",
+					"my_order.html",
+					"my_income.html"
 				],
 				"priority": 1
 			},
