@@ -58,11 +58,11 @@
 			#shijian{
 				color: gray;
 				margin-left: 20px;
-				font-size: 16px;
+				font-size: 14px;
 			}
 			#addr{
 				margin-top: 10px;
-				font-size: 16px;
+				font-size: 14px;
 			}
 			#company{
 				color: gray;
@@ -203,14 +203,14 @@
 			}
 
 			mui("#mui-template").on('tap', '.mui-content', function(e) {
-				var order_id = this.getAttribute("id");
-				mui.openWindow({
-					url: 'order_detail.html',
-					id: 'order_detail.html',
-					extras: {
-						order_id: order_id
+				var id = this.getAttribute("id");
+				var webview_detail = plus.webview.getWebviewById('order_detail.html');
+					if(id) {
+						mui.fire(webview_detail, 'order_id', {
+							order_id: id
+						});
+						webview_detail.show('pop-in', 300);
 					}
-				})
 
 			});
 		</script>

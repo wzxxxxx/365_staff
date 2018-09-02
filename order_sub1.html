@@ -58,12 +58,12 @@
 			#shijian {
 				color: gray;
 				margin-left: 20px;
-				font-size: 16px;
+				font-size: 14px;
 			}
 			
 			#addr {
 				margin-top: 10px;
-				font-size: 16px;
+				font-size: 14px;
 			}
 			
 			#company {
@@ -166,14 +166,10 @@
 				mui("#mui-template").on('tap', '.mui-content', function(e) {
 					var id = this.getAttribute("id");
 					if(id) {
+						mui.fire(webview_detail, 'order_id', {
+							order_id: id
+						});
 						webview_detail.show('pop-in', 300);
-						//											mui.openWindow({
-						//												url: 'order_detail.html',
-						//												id: 'order_detail.html',
-						//												extras: {
-						//													ar_id: id
-						//												}
-						//											});
 					}
 				});
 

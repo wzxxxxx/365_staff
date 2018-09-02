@@ -7,7 +7,7 @@
 		<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
 		<link href="css/mui.min.css" rel="stylesheet" />
 		<style>
-				.mui-table-view {
+			.mui-table-view {
 				background: #efeff4;
 				width: 95%;
 				margin-left: 10px;
@@ -24,7 +24,7 @@
 				height: 0;
 			}
 			
-			.mui-table-view-cell{
+			.mui-table-view-cell {
 				background: white;
 			}
 			
@@ -32,6 +32,7 @@
 				right: 15px;
 				left: 15px;
 			}
+			
 			.bg {
 				background: url(images/ic_two_bg3.png) no-repeat;
 				background-size: cover;
@@ -44,8 +45,10 @@
 				width: 100%;
 				float: left;
 				text-align: center;
+				margin-top: 20px;
 				color: white;
 			}
+			
 			#avatar {
 				clear: both;
 				display: block;
@@ -54,10 +57,22 @@
 				width: 80px;
 				height: 80px;
 			}
-			.lastli{
+			
+			.lastli {
 				border-bottom-left-radius: 10px;
 				border-bottom-right-radius: 10px;
 				color: #FF6C00;
+			}
+			.mui-navigate-right:after, .mui-push-right:after{
+				display: none;
+			}
+			.mui-navigate-right{
+				 font-size: 14px;
+			}
+			
+			.mui-pull-right{
+				 color: gray;
+				
 			}
 		</style>
 	</head>
@@ -66,37 +81,37 @@
 		<div class="mui-content">
 			<ul class="mui-table-view">
 				<div class="mui-content bg">
-				<img src="images/ic_sex_men.png" id="avatar" />
-				<span class="span-center" id="name"></span>
+					<img src="images/ic_sex_men.png" id="avatar" />
+					<span class="span-center" id="name"></span>
 				</div>
 				<li class="mui-table-view-cell">
 					<a class="mui-navigate-right">
-						预约时间<span class="mui-pull-right mui-navigate-right" id="user_name"></span>
+						预约时间<span class="mui-pull-right mui-navigate-right" id="time"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a class="mui-navigate-right">
-						服务项目<span class="mui-pull-right mui-navigate-right" id="user_sex"></span>
+						服务项目<span class="mui-pull-right mui-navigate-right" id="project"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a class="mui-navigate-right">
-						地址<span class="mui-pull-right mui-navigate-right" id="user_birthday"></span>
+						地址<span class="mui-pull-right mui-navigate-right" id="address"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a id="youhuiquan" class="mui-navigate-right">
-						手机<span class="mui-pull-right mui-navigate-right" id="user_mobile"></span>
+						手机<span class="mui-pull-right mui-navigate-right" id="mobile"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a id="youhuiquan" class="mui-navigate-right">
-						客户备注<span class="mui-pull-right mui-navigate-right" id="user_mobile"></span>
+						客户备注<span class="mui-pull-right mui-navigate-right" id="remark"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell">
 					<a id="youhuiquan" class="mui-navigate-right">
-						支付方式<span class="mui-pull-right mui-navigate-right" id="user_mobile"></span>
+						支付方式<span class="mui-pull-right mui-navigate-right" id="howtopay"></span>
 					</a>
 				</li>
 				<li class="mui-table-view-cell lastli">
@@ -107,20 +122,51 @@
 			</ul>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript">
 			//重写返回逻辑，返回时隐藏详情页webview
-mui.back = function() {
-    plus.webview.currentWebview().hide("auto", 300);
-}
-//窗口隐藏时，重置页面数据
-mui.plusReady(function () {
-    var self = plus.webview.currentWebview();
-    self.addEventListener("hide",function (e) {
-        window.scrollTo(0, 0);//重置滚动条位置
-//      vm.resetData();//重置页面数据
-    },false);
-})
+			mui.back = function() {
+				plus.webview.currentWebview().hide("auto", 300);
+			}
+			//窗口隐藏时，重置页面数据
+			mui.plusReady(function() {
+				var self = plus.webview.currentWebview();
+				self.addEventListener("hide", function(e) {
+					window.scrollTo(0, 0); //重置滚动条位置
+					//      vm.resetData();//重置页面数据
+				}, false);
+				
+			})
+			
+			window.addEventListener('order_id', function(event) {
+					if(event) {
+						var order_id = event.detail.order_id; 
+						getOrderDetail(order_id);
+					}
+				});
+			
+			function getOrderDetail(order_id){
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var staff_id = loginData.data.info.staff_id;
+				var param = {
+					service: 'Jsapp.Order.GetInfo',
+					ob_id: order_id,
+					os_staff_id: staff_id
+				}
+				wAjax(param, function(result){
+					var info = result.data.info;
+					document.getElementById('name').innerHTML = info.user_contacts_name;
+					document.getElementById('time').innerHTML = info.user_predict_work_time;
+					document.getElementById('project').innerHTML = info.goods[0].og_goods_name;
+					document.getElementById('address').innerHTML = info.user_contacts_province_name + info.user_contacts_city_name + info.user_contacts_county_name + info.user_contacts_address;
+					document.getElementById('mobile').innerHTML = info.user_contacts_phone;
+					document.getElementById('remark').innerHTML = info.ob_remark;
+					document.getElementById('howtopay').innerHTML = info.pay[0].op_pay_modo;
+				})
+			}
 		</script>
 	</body>
 

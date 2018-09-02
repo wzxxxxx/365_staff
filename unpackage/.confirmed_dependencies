@@ -1,13 +1,13 @@
 {
-	"login.html": {
-		"refer": [
-			"main.html"
-		]
-	},
-	"main.html": {
-		"refer": [
-			"my_order.html",
-			"my_income.html"
-		]
-	}
+  "login.html": {
+    "refer": [
+      "main.html"
+    ]
+  },
+  "main.html": {
+    "refer": [
+      "my_order.html",
+      "my_income.html"
+    ]
+  }
 }
