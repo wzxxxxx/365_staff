@@ -71,10 +71,17 @@
 				 color: gray;
 				 font-size: 14px;
 			}
+			.mui-bar{
+				background: red;
+			}
 		</style>
 	</head>
 
 	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 class="mui-title">订单详情</h1>
+		</header>
 		<div class="mui-content">
 			<ul class="mui-table-view">
 				<div class="mui-content bg">
@@ -109,26 +116,18 @@
 		<script src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript">
-			//重写返回逻辑，返回时隐藏详情页webview
-			mui.back = function() {
-				plus.webview.currentWebview().hide("auto", 300);
-			}
 			//窗口隐藏时，重置页面数据
 			mui.plusReady(function() {
 				var self = plus.webview.currentWebview();
-				self.addEventListener("hide", function(e) {
-					window.scrollTo(0, 0); //重置滚动条位置
-					//      vm.resetData();//重置页面数据
-				}, false);
+				var order_id = self.order_id;
+				getOrderDetail(order_id);
+//				self.addEventListener("hide", function(e) {
+//					window.scrollTo(0, 0); //重置滚动条位置
+//					//      vm.resetData();//重置页面数据
+//				}, false);
 				
 			})
 			
-			window.addEventListener('order_id', function(event) {
-					if(event) {
-						var order_id = event.detail.order_id; 
-						getOrderDetail(order_id);
-					}
-				});
 			
 			function getOrderDetail(order_id){
 				var loginData = JSON.parse(localStorage.getItem('login'));
