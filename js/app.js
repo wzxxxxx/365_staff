@@ -71,11 +71,12 @@
 		obj.show = {
 			aniShow: 'pop-in'
 		};
-		if(obj.styles){
+		if(obj.styles && obj.styles.titleNView){
 			obj.styles.bounce = 'vertical';
-//			obj.styles.titleNView.autoBackButton = true;
-//			obj.styles.titleNView.titleColor = '#FFFFFF';
-//			obj.styles.titleNView.backgroundColor = '#FF0000';
+			obj.styles.scrollIndicator = 'none';
+			obj.styles.titleNView.autoBackButton = true;
+			obj.styles.titleNView.titleColor = '#FFFFFF';
+			obj.styles.titleNView.backgroundColor = '#FF0000';
 		}
 		if(obj.waiting) {
 			obj.waiting.options = {

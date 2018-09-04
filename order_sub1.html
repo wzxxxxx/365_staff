@@ -148,33 +148,33 @@
 				var self = plus.webview.currentWebview();
 				var list = self.list || [];
 				fillData(list, true);
-				//				var webview_detail = mui.preload({
-				//					url: 'order_detail.html',
-				//					id: 'order_detail.html',
-				//					styles: {
-				//						render: "always", //一直渲染
-				//						popGesture: "hide"
-				////						titleNView: {
-				////							titleText: '	订单详情',
-				////							backgroundColor: '#FF0000',
-				////							autoBackButton: true,
-				////							titleColor: '#FFFFFF'
-				////						}
-				//					}
-				//				});
+				var webview_detail = mui.preload({
+					url: 'order_detail.html',
+					id: 'order_detail.html',
+					styles: {
+						render: "always", //一直渲染
+						popGesture: "hide",
+						titleNView: {
+							titleText: '	订单详情',
+							backgroundColor: '#FF0000',
+							autoBackButton: true,
+							titleColor: '#FFFFFF',
+							bounce: 'vertical',
+							scrollIndicator: 'none'
+						}
+					}
+				});
 
 				mui("#mui-template").on('tap', '.mui-content', function(e) {
 					var id = this.getAttribute("id");
 					if(id) {
-						mui.openWindow({
-							id: 'order_detail.html',
-							url: 'order_detail.html',
-							extras: {
-								order_id: id
-							}
-						})
+						mui.fire(webview_detail, 'order_id', {
+							order_id: id
+						});
+						webview_detail.show('pop-in', 300);
 					}
 				});
+
 			})
 
 			function fillData(list, isDown) {
