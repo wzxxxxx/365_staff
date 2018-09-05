@@ -88,6 +88,9 @@
 				border: none;
 				border-radius: 20px;
 			}
+			.mui-table-view-cell.mui-active{
+	background-color: white;
+}
 		</style>
 	</head>
 
@@ -119,7 +122,7 @@
 				<li class="mui-table-view-cell lastli">
 					<div class="mui-row">
 						<img src="images/ic_two_map1.png" />
-						<img src="images/calic_two_l.png" />
+						<img src="images/calic_two_l.png" onclick="dial()"/>
 						<button type="button" class="mui-pull-right" onclick="getMoney()">收款</button>
 					</div>
 
@@ -153,6 +156,11 @@
 					getOrderDetail(order_id);
 				}
 			});
+			
+			function dial(){
+				var phone = document.getElementById('mobile').innerHTML;
+				plus.device.dial(phone, false);
+			}
 			
 			function getMoney(){
 				mui.openWindow({

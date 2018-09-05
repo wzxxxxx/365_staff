@@ -43,10 +43,14 @@
 				font-size: 12px;
 			}
 			
-			.mui-row img {
+			.mui-table-view-cell img {
 				height: 20px;
 				width: 20px;
 				margin: 0 10px;
+			}
+			
+			.mui-table-view-cell:after {
+				display: none;
 			}
 			
 			span {
@@ -78,24 +82,38 @@
 				选择客户支付方式
 			</div>
 			<div class="line"></div>
-			<div class="mui-row">
-				<img src="images/ic_wechar_pay.png" />在线支付<input name="radio1" type="radio" class="mui-pull-right">
+			<ul class="mui-table-view mui-table-view-radio">
+				<li class="mui-table-view-cell" id="first">
+
+					<a class="mui-navigate-right "><img src="images/ic_wechar_pay.png" />在线支付</a>
+				</li>
+				<li class="mui-table-view-cell" id="second">
+
+					<a class="mui-navigate-right"><img src="images/ic_money_pay.png" />现金支付</a>
+				</li>
+				<li class="mui-table-view-cell" id="third">
+
+					<a class="mui-navigate-right"><img src="images/ic_wechar_pay.png" />用户支付</a>
+				</li>
+			</ul>
+			<!--<div class="mui-row" >
+				<img src="images/ic_wechar_pay.png" /><input name="radio1" type="radio" class="mui-pull-right" onclick="click1()">
 			</div>
 			<div class="mui-row">
-				<img src="images/ic_money_pay.png" />现金支付<input name="radio1" type="radio" class="mui-pull-right">
+				<img src="images/ic_money_pay.png" /><input name="radio1" type="radio" class="mui-pull-right" onclick="click2()">
 			</div>
-			<div class="mui-row mui-table-view-radio">
-				<img src="images/ic_wechar_pay.png" />用户支付<input name="radio1" type="radio" class="mui-pull-right">
-			</div>
-			<div class="mui-row split mui-text-center">
+			<div class="mui-row">
+				<img src="images/ic_wechar_pay.png" /><input name="radio1" type="radio" class="mui-pull-right" onclick="click3()">
+			</div>-->
+			<div class="mui-row split mui-text-center mui-hidden" id="firstway">
 				二维码支付
 			</div>
-			<!--<div class="mui-row split mui-text-center">
+			<div class="mui-row split mui-text-center mui-hidden" id="secondway">
 				确认客户已付款
 			</div>
-			<div class="mui-row split mui-text-center">
+			<div class="mui-row split mui-text-center mui-hidden" id="thirdway">
 				用户APP支付
-			</div>-->
+			</div>
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
@@ -104,11 +122,57 @@
 				var self = plus.webview.currentWebview();
 				var order_id = self.order_id || '';
 				getInfo(order_id);
-//				var list = document.querySelector('.mui-row.mui-table-view-radio');
-//				list.addEventListener('selected', function(e) {
-//					console.log("当前选中的为：" + e.detail.el.innerText);
-//				});
+
+				var list = document.querySelector('.mui-table-view.mui-table-view-radio');
+				list.addEventListener('selected', function(e) {
+					switch(e.detail.el.id) {
+						case "first":
+							document.getElementById('firstway').classList.remove('mui-hidden');
+							document.getElementById('secondway').classList.add('mui-hidden');
+							document.getElementById('thirdway').classList.add('mui-hidden');
+							break;
+						case "second":
+							document.getElementById('firstway').classList.add('mui-hidden');
+							document.getElementById('secondway').classList.remove('mui-hidden');
+							document.getElementById('thirdway').classList.add('mui-hidden');
+							break;
+						case "third":
+							document.getElementById('firstway').classList.add('mui-hidden');
+							document.getElementById('secondway').classList.add('mui-hidden');
+							document.getElementById('thirdway').classList.remove('mui-hidden');
+							break;
+						default:
+							break;
+					}
+					console.log("当前选中的为：" + e.detail.el.innerText);
+				});
 			})
+			//			var tt = document.getElementsByName('test11');
+			//      for (var iIndex = 0; iIndex < tt.length ; iIndex++ )
+			//      {
+			//          if(tt[iIndex].checked)
+			//          {
+			//              alert(tt[iIndex].value);
+			//              break;
+			//          }
+			//      }
+			//			function click1() {
+			//				document.getElementById('firstway').hidden = false;
+			//				document.getElementById('secondway').hidden = true;
+			//				document.getElementById('thirdway').hidden = true;
+			//			}
+			//
+			//			function click2() {
+			//				document.getElementById('firstway').hidden = true;
+			//				document.getElementById('secondway').hidden = false;
+			//				document.getElementById('thirdway').hidden = true;
+			//			}
+			//
+			//			function click3() {
+			//				document.getElementById('firstway').hidden = true;
+			//				document.getElementById('secondway').hidden = true;
+			//				document.getElementById('thirdway').hidden = false;
+			//			}
 
 			function getInfo(order_id) {
 				var loginData = JSON.parse(localStorage.getItem('login'));
@@ -124,8 +188,23 @@
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					document.getElementById('service').innerHTML = info.goods[0].og_goods_name;
-					//					document.getElementById('time').innerHTML = info.pay[0].op_work_end_time - info.pay[0].op_work_start_time;
+					document.getElementById('time').innerHTML = dateDiff(info.pay[0].op_work_end_time, info.pay[0].op_work_start_time);
 				})
+			}
+
+			//时间戳相减
+			function dateDiff(etime, stime) {
+				var usedTime = etime - stime; //两个时间戳相差的毫秒数
+				var days = Math.floor(usedTime / (24 * 3600 * 1000));
+				//计算出小时数
+				var leave1 = usedTime % (24 * 3600 * 1000); //计算天数后剩余的毫秒数
+				var hours = Math.floor(leave1 / (3600 * 1000));
+				//计算相差分钟数
+				var leave2 = leave1 % (3600 * 1000); //计算小时数后剩余的毫秒数
+				var minutes = Math.floor(leave2 / (60 * 1000));
+
+				var time = '' + days && (days + "天") + hours && (hours + "时") + minutes + "分钟";
+				return time;
 			}
 		</script>
 	</body>
