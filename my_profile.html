@@ -144,14 +144,15 @@
 				initCacheSize();
 
 			})
-			
-			function relogin(){
+
+
+			function relogin() {
 				localStorage.removeItem('login');
 				plus.webview.getWebviewById('login.html').show('pop-in', 300);
-//					mui.openWindow({
-//						url: 'login.html',
-//						id: 'login.html'
-//					})
+				//					mui.openWindow({
+				//						url: 'login.html',
+				//						id: 'login.html'
+				//					})
 			}
 
 			function clearCache() {
@@ -170,7 +171,7 @@
 					document.getElementById('clearCache').innerHTML = '清除缓存 (' + formatSize(size) + ')';
 				})
 			}
-			
+
 			function formatSize(size) {
 				var fileSizeString;
 				size = parseInt(size);
@@ -196,8 +197,10 @@
 					id: "about_us.html",
 					styles: {
 						titleNView: {
-							titleText: '关于我们'
-						}
+							titleText: '关于我们',
+							backgroundColor: 'white'
+						},
+						bounceBackground: '#FFFFFF'
 					}
 				});
 			}
@@ -208,8 +211,10 @@
 					id: "change_password.html",
 					styles: {
 						titleNView: {
-							titleText: '修改密码'
-						}
+							titleText: '修改密码',
+							backgroundColor: 'white'
+						},
+						bounceBackground: '#FFFFFF'
 					}
 				});
 			}
