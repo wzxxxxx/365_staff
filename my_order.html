@@ -29,6 +29,9 @@
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript">
 			mui.plusReady(function(){
+				plus.webview.currentWebview().setStyle({
+						'popGesture': 'none'
+					});
 				getOrderList();
 			});
 

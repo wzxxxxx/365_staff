@@ -63,10 +63,10 @@
 	</head>
 
 	<body>
-		<header class="mui-bar mui-bar-nav">
+		<!--<header class="mui-bar mui-bar-nav">
 			<h1 class="mui-title"></h1>
 			<button id="setting" class=" mui-pull-right mui-btn-link">消息</button>
-		</header>
+		</header>-->
 		<div class="mui-content">
 			<div id="top" class="mui-text-center">
 				<div id="text1">累计总收入</div>
@@ -99,7 +99,9 @@
 		<script src="js/app.js"></script>
 		<script>
 			mui.plusReady(function() {
-
+					plus.webview.currentWebview().setStyle({
+						'popGesture': 'none'
+					});
 			});
 
 			function toProfile() {

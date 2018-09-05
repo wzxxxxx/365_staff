@@ -158,7 +158,9 @@
 							titleText: '	订单详情',
 							backgroundColor: '#FF0000',
 							autoBackButton: true,
-							titleColor: '#FFFFFF'
+							titleColor: '#FFFFFF',
+							bounce: 'vertical',
+							scrollIndicator: 'none'
 						}
 					}
 				});
@@ -243,17 +245,17 @@
 
 			}
 
-			mui("#mui-template").on('tap', '.mui-content', function(e) {
-				var order_id = this.getAttribute("id");
-				mui.openWindow({
-					url: 'order_detail.html',
-					id: 'order_detail.html',
-					extras: {
-						order_id: order_id
-					}
-				})
-
-			});
+//			mui("#mui-template").on('tap', '.mui-content', function(e) {
+//				var order_id = this.getAttribute("id");
+//				mui.openWindow({
+//					url: 'order_detail.html',
+//					id: 'order_detail.html',
+//					extras: {
+//						order_id: order_id
+//					}
+//				})
+//
+//			});
 		</script>
 	</body>
 
