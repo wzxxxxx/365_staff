@@ -44,7 +44,7 @@
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					var ob_number = info.ob_number;
-					var op_pay_modo = info.pay[0].op_pay_modo;
+					var op_pay_modo = info.pay[0] && info.pay[0].op_pay_modo || '1'; 
 					getQRcode(ob_number, op_pay_modo);
 				})
 			}

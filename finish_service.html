@@ -172,9 +172,18 @@
 					console.log("当前选中的为：" + e.detail.el.innerText);
 				});
 			})
-			
+			var ob_number = '';
 			function finish(){
-				
+				var param = {
+					service: 'Jsapp.Order.GetCashPayment',
+					ob_number: ob_number
+				}
+				wAjax(param, function(result){
+					plus.webview.getWebviewById('order_detail.html').reload();
+					setTimeout(function(){
+						mui.back();
+					}, 200);
+				})
 			}
 
 			function getInfo(order_id) {
@@ -190,6 +199,7 @@
 				}
 				wAjax(param, function(result) {
 					var info = result.data.info;
+					ob_number = info.ob_number;
 					document.getElementById('service').innerHTML = info.goods[0].og_goods_name;
 					document.getElementById('time').innerHTML = dateDiff(info.pay[0].op_work_end_time, info.pay[0].op_work_start_time);
 				})

@@ -59,8 +59,16 @@
 			#contact_service {
 				background-image: url(images/ic_two_bt1.png)
 			}
+			
 			#name {
 				padding-top: 25px;
+				padding-left: 40px;
+				font-size: 20px;
+			}
+			
+			#message {
+				padding-right: 10px;
+				font-size: 16px;
 			}
 		</style>
 	</head>
@@ -72,7 +80,12 @@
 		</header>-->
 		<div class="mui-content">
 			<div id="top" class="mui-text-center">
-				<div id="name"></div>
+				<div class="mui-row">
+					<div id="name">
+						<div class="mui-pull-right" id="message" onclick="toMessage()">消息</div>
+					</div>
+
+				</div>
 				<div id="text1">累计总收入</div>
 				<div id="income">0 元</div>
 				<div class="mui-row" id="count">
@@ -100,17 +113,18 @@
 			</div>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script type="text/javascript" src="js/app.js" ></script>
+		<script type="text/javascript" src="js/app.js"></script>
 		<script>
 			mui.plusReady(function() {
-					plus.webview.currentWebview().setStyle({
-						'popGesture': 'none'
-					});
-					getStatistics();
-					getName();
+				plus.webview.currentWebview().setStyle({
+					'popGesture': 'none'
+				});
+				getStatistics();
+				getName();
+				getPosition();
 			});
-			
-			function getName(){
+
+			function getName() {
 				var loginData = JSON.parse(localStorage.getItem('login'));
 				if(!loginData) {
 					return;
@@ -120,18 +134,31 @@
 					service: 'Jsapp.Member.GetInfoByUserNumber',
 					mbi_number: user_number
 				}
-				wAjax(param, function(result){
+				wAjax(param, function(result) {
 					var info = result.data.info;
-					document.getElementById('name').innerHTML = info.mei_real_name;
-//					var self = plus.webview.currentWebview();
-////					var nview = self.getTitleNView();
-//					var style = {
-//						titleNView: {
-//							titleText: info.mei_real_name
-//						}
-//					}
-//					self.setStyle(style);
+					document.getElementById('name').innerHTML = info.mei_real_name + '<div class="mui-pull-right" id="message" onclick="toMessage()">消息</div>';
+					//					var self = plus.webview.currentWebview();
+					////					var nview = self.getTitleNView();
+					//					var style = {
+					//						titleNView: {
+					//							titleText: info.mei_real_name
+					//						}
+					//					}
+					//					self.setStyle(style);
 				})
+			}
+
+			function toMessage() {
+				mui.openWindow({
+					url: 'messages.html',
+					id: 'messages.html',
+					styles: {
+						titleNView: {
+							titleText: '我的消息',
+							backgroundColor: '#FFFFFF'
+						}
+					}
+				});
 			}
 
 			function toProfile() {
@@ -153,8 +180,8 @@
 					}
 				});
 			}
-			
-			function toOrders(){
+
+			function toOrders() {
 				mui.openWindow({
 					url: 'my_order.html',
 					id: 'my_order.html',
@@ -166,8 +193,8 @@
 					}
 				});
 			}
-			
-			function goEditProfile(){
+
+			function goEditProfile() {
 				mui.openWindow({
 					url: 'edit_profile.html',
 					id: 'edit_profile.html',
@@ -175,17 +202,17 @@
 						titleNView: {
 							titleText: '会员信息',
 							backgroundColor: 'white'
-							
+
 						}
 					}
 				})
 			}
-			
-			function dial(){
+
+			function dial() {
 				plus.device.dial('04708336500', false);
 			}
-			
-			function getStatistics(){
+
+			function getStatistics() {
 				var loginData = JSON.parse(localStorage.getItem('login'));
 				if(!loginData) {
 					return;
@@ -195,15 +222,15 @@
 					service: 'Jsapp.Member.GetStaffPriceCount',
 					jce_id: user_id
 				}
-				wAjax(statisticsParam, function(result){
+				wAjax(statisticsParam, function(result) {
 					var info = result.data.info;
 					document.getElementById('income').innerHTML = info.countPrice + " 元";
-					document.getElementById('all').innerHTML = '累计接单' +  info.orderCount + '次';
+					document.getElementById('all').innerHTML = '累计接单' + info.orderCount + '次';
 					document.getElementById('today').innerHTML = '今日收入' + info.day_price + '元';
 				})
 			}
-			
-			function toIncome(){
+
+			function toIncome() {
 				mui.openWindow({
 					url: 'my_income.html',
 					id: 'my_income.html',
@@ -216,6 +243,33 @@
 						bounceBackground: '#2A333D'
 					}
 				})
+			}
+
+			function getPosition() {
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var user_id = loginData.data.info.user_id;
+				plus.geolocation.watchPosition(function(p) {
+					console.log('Geolocation\nLatitude:' + p.coords.latitude + '\nLongitude:' + p.coords.longitude + '\nAltitude:' + p.coords.altitude);
+					var param = {
+						service: 'Jsapp.Member.SetLocation',
+						jce_id: user_id,
+						jce_longitudu: p.coords.longitude,
+						jce_latitude: p.coords.altitude
+					}
+					wAjax(param, function(result) {
+
+					})
+				}, function(e) {
+					alert('Geolocation error: ' + e.message);
+					if(e.code == 1) {
+						mui.alert('请求位置权限失败!', '请开启位置权限!', '好', function() {
+
+						})
+					}
+				});
 			}
 		</script>
 	</body>

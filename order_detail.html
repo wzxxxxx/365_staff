@@ -88,7 +88,8 @@
 				border: none;
 				border-radius: 20px;
 			}
-			.mui-table-view-cell.mui-active{
+			
+			.mui-table-view-cell.mui-active {
 				background-color: white;
 			}
 		</style>
@@ -122,12 +123,12 @@
 				<li class="mui-table-view-cell lastli">
 					<div class="mui-row" id="shoukuan">
 						<img src="images/ic_two_map1.png" />
-						<img src="images/calic_two_l.png" onclick="dial()"/>
-						<button type="button" class="mui-pull-right" onclick="getMoney()">收款</button>
+						<img src="images/calic_two_l.png" onclick="dial()" />
+						<button type="button" class="mui-pull-right" id="btn"></button>
 					</div>
 
 					<a id="youhuiquan" class=" mui-text-center mui-hidden">
-						
+
 					</a>
 				</li>
 			</ul>
@@ -144,10 +145,9 @@
 				var self = plus.webview.currentWebview();
 				self.addEventListener("hide", function(e) {
 					window.scrollTo(0, 0); //重置滚动条位置
-					//      vm.resetData();//重置页面数据
 				}, false);
 			})
-			
+
 			var order_id = '';
 
 			window.addEventListener('order_id', function(event) {
@@ -156,13 +156,14 @@
 					getOrderDetail(order_id);
 				}
 			});
-			
-			function dial(){
+
+			function dial() {
 				var phone = document.getElementById('mobile').innerHTML;
 				plus.device.dial(phone, false);
 			}
-			
-			function getMoney(){
+
+			function goFinishService() {
+
 				mui.openWindow({
 					url: 'finish_service.html',
 					id: 'finish_service.html',
@@ -197,38 +198,90 @@
 					document.getElementById('address').innerHTML = info.user_contacts_province_name + info.user_contacts_city_name + info.user_contacts_county_name + info.user_contacts_address;
 					document.getElementById('mobile').innerHTML = info.user_contacts_phone;
 					document.getElementById('remark').innerHTML = info.ob_remark;
-					if(info.pay[0] && info.pay[0].op_pay_modo){
-					switch (info.pay[0].op_pay_modo){
-						case "1":
-							document.getElementById('howtopay').innerHTML = "支付宝在线";
-							break;
-						case "2":
-							document.getElementById('howtopay').innerHTML = "微信在线";
-							break;
-						case "3":
-							document.getElementById('howtopay').innerHTML = "微信扫码";
-							break;
-						case "4":
-							document.getElementById('howtopay').innerHTML = "支付宝扫码";
-							break;
-						case "5":
-							document.getElementById('howtopay').innerHTML = "现金";
-							break;
-						default:
-							break;
-					}
+					if(info.pay[0] && info.pay[0].op_pay_modo) {
+						switch(info.pay[0].op_pay_modo) {
+							case "1":
+								document.getElementById('howtopay').innerHTML = "支付宝在线";
+								break;
+							case "2":
+								document.getElementById('howtopay').innerHTML = "微信在线";
+								break;
+							case "3":
+								document.getElementById('howtopay').innerHTML = "微信扫码";
+								break;
+							case "4":
+								document.getElementById('howtopay').innerHTML = "支付宝扫码";
+								break;
+							case "5":
+								document.getElementById('howtopay').innerHTML = "现金";
+								break;
+							default:
+								break;
+						}
 					}
 					var ele = document.getElementById('youhuiquan');
 					var ele2 = document.getElementById('shoukuan');
+					var btn = document.getElementById('btn');
 					if(info.ob_status == 6 || info.ob_status == 7 || info.ob_status == 8 || info.ob_status == 14) {
 						ele.classList.remove('mui-hidden');
 						ele.innerHTML = '已支付' + info.pay[0].op_actual_price + '元';
 						ele2.classList.add('mui-hidden');
 					} else {
-						ele2.classList.remove('mui-hidden');
 						ele.classList.add('mui-hidden');
+						if(info.is_responsible == 1) {
+							ele2.classList.remove('mui-hidden');
+							if(info.ob_status == 3) {
+								btn.innerHTML = '开始工作';
+								btn.addEventListener('tap', function() {
+									startWork(info.ob_number)
+								});
+							} else if(info.ob_status == 4) {
+								btn.innerHTML = '结束工作';
+								btn.addEventListener('tap', function() {
+									finishWork(info.ob_number)
+								});
+							} else {
+								btn.innerHTML = '收款';
+								btn.addEventListener('tap', goFinishService);
+							}
+						}
 					}
 				})
+			}
+
+			function startWork(ob_number) {
+				var wt = plus.nativeUI.showWaiting();
+				var param = {
+					service: 'Jsapp.Order.StartWorking',
+					ob_number: ob_number
+				}
+				wAjax(param, function(result) {
+					mui.toast('提交成功!');
+					plus.webview.currentWebview().reload();
+					setTimeout(function() {
+						plus.nativeUI.closeWaiting();
+					}, 200);
+				})
+			}
+
+			function finishWork(ob_number) {
+				mui.confirm('确定吗?', '结束任务', ['是', '否'], function(event) {
+					if(event.index == 0) {
+						var wt = plus.nativeUI.showWaiting();
+						var param = {
+							service: 'Jsapp.Order.EndWorking',
+							ob_number: ob_number
+						}
+						wAjax(param, function(result) {
+							mui.toast('提交成功!');
+							plus.webview.currentWebview().reload();
+							setTimeout(function() {
+								plus.nativeUI.closeWaiting();
+							}, 200);
+						})
+					}
+				});
+
 			}
 		</script>
 	</body>
