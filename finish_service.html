@@ -9,7 +9,6 @@
 		<style>
 		.mui-row {
 				background: white;
-				/*margin-top: 10px;*/
 				padding: 10px;
 			}
 			
@@ -56,6 +55,41 @@
 			span {
 				color: gray;
 			}
+			
+			#firstway{
+				height: 60px;
+				line-height: 40px;
+				color: red;
+				width: 100%;
+				border: none;
+				font-size: 16px;
+			}
+			
+			#secondway{
+				background: red;
+				color: white;
+				height: 60px;
+				line-height: 40px;
+				width: 100%;
+				border: none;
+				font-size: 16px;
+			}
+			#thirdway{
+				background: red;
+				color: white;
+				height: 60px;
+				line-height: 40px;
+				width: 100%;
+				border: none;
+				font-size: 16px;
+			}
+			.mui-row img{
+				height: 20px;
+				width: 20px;
+				vertical-align:middle;
+				margin-right: 10px;
+				padding-bottom: 3px;
+			}
 		}
 		</style>
 	</head>
@@ -73,7 +107,7 @@
 				工作时长<span class="mui-pull-right" id="time"></span>
 			</div>
 			<div class="mui-row split">
-				实收金额<input type="number" />元
+				实收金额<input type="number" id="price"/>元
 			</div>
 			<div class="mui-row split">
 				备注信息<input type="number" placeholder="请输入备注信息（如是否使用优惠券）" class="long" />
@@ -96,24 +130,15 @@
 					<a class="mui-navigate-right"><img src="images/ic_wechar_pay.png" />用户支付</a>
 				</li>
 			</ul>
-			<!--<div class="mui-row" >
-				<img src="images/ic_wechar_pay.png" /><input name="radio1" type="radio" class="mui-pull-right" onclick="click1()">
-			</div>
-			<div class="mui-row">
-				<img src="images/ic_money_pay.png" /><input name="radio1" type="radio" class="mui-pull-right" onclick="click2()">
-			</div>
-			<div class="mui-row">
-				<img src="images/ic_wechar_pay.png" /><input name="radio1" type="radio" class="mui-pull-right" onclick="click3()">
-			</div>-->
-			<div class="mui-row split mui-text-center mui-hidden" id="firstway">
-				二维码支付
-			</div>
-			<div class="mui-row split mui-text-center mui-hidden" id="secondway">
+			<button type="button" class="mui-row split mui-text-center mui-hidden" id="firstway" onclick="goEWM()">
+				<img src="images/ic_scan.png"/>二维码支付
+			</button>
+			<button type="button" class="mui-row split mui-text-center mui-hidden" id="secondway" onclick="finish()">
 				确认客户已付款
-			</div>
-			<div class="mui-row split mui-text-center mui-hidden" id="thirdway">
+			</button>
+			<button type="button" class="mui-row split mui-text-center mui-hidden" id="thirdway" onclick="finish()">
 				用户APP支付
-			</div>
+			</button>
 		</div>
 		<script src="js/mui.min.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
@@ -147,32 +172,10 @@
 					console.log("当前选中的为：" + e.detail.el.innerText);
 				});
 			})
-			//			var tt = document.getElementsByName('test11');
-			//      for (var iIndex = 0; iIndex < tt.length ; iIndex++ )
-			//      {
-			//          if(tt[iIndex].checked)
-			//          {
-			//              alert(tt[iIndex].value);
-			//              break;
-			//          }
-			//      }
-			//			function click1() {
-			//				document.getElementById('firstway').hidden = false;
-			//				document.getElementById('secondway').hidden = true;
-			//				document.getElementById('thirdway').hidden = true;
-			//			}
-			//
-			//			function click2() {
-			//				document.getElementById('firstway').hidden = true;
-			//				document.getElementById('secondway').hidden = false;
-			//				document.getElementById('thirdway').hidden = true;
-			//			}
-			//
-			//			function click3() {
-			//				document.getElementById('firstway').hidden = true;
-			//				document.getElementById('secondway').hidden = true;
-			//				document.getElementById('thirdway').hidden = false;
-			//			}
+			
+			function finish(){
+				
+			}
 
 			function getInfo(order_id) {
 				var loginData = JSON.parse(localStorage.getItem('login'));
@@ -189,6 +192,28 @@
 					var info = result.data.info;
 					document.getElementById('service').innerHTML = info.goods[0].og_goods_name;
 					document.getElementById('time').innerHTML = dateDiff(info.pay[0].op_work_end_time, info.pay[0].op_work_start_time);
+				})
+			}
+			
+			function goEWM(){
+				var self = plus.webview.currentWebview();
+				var order_id = self.order_id || '';
+				if(!(document.getElementById('price').value)){
+					mui.toast('请填写实收金额！');
+					return;
+				}
+				mui.openWindow({
+					url: 'erweima.html',
+					id: 'erweima.html',
+					styles: {
+						titleNView: {
+							titleText: '支付',
+							backgroundColor: 'white'
+						}
+					},
+					extras: {
+						order_id: order_id
+					}
 				})
 			}
 

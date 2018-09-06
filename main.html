@@ -25,7 +25,7 @@
 			}
 			
 			#text1 {
-				padding-top: 50px;
+				padding-top: 30px;
 				font-size: x-large;
 			}
 			
@@ -59,6 +59,9 @@
 			#contact_service {
 				background-image: url(images/ic_two_bt1.png)
 			}
+			#name {
+				padding-top: 25px;
+			}
 		</style>
 	</head>
 
@@ -69,6 +72,7 @@
 		</header>-->
 		<div class="mui-content">
 			<div id="top" class="mui-text-center">
+				<div id="name"></div>
 				<div id="text1">累计总收入</div>
 				<div id="income">0 元</div>
 				<div class="mui-row" id="count">
@@ -96,13 +100,39 @@
 			</div>
 		</div>
 		<script src="js/mui.min.js"></script>
-		<script src="js/app.js"></script>
+		<script type="text/javascript" src="js/app.js" ></script>
 		<script>
 			mui.plusReady(function() {
 					plus.webview.currentWebview().setStyle({
 						'popGesture': 'none'
 					});
+					getStatistics();
+					getName();
 			});
+			
+			function getName(){
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var user_number = loginData.data.info.user_number;
+				var param = {
+					service: 'Jsapp.Member.GetInfoByUserNumber',
+					mbi_number: user_number
+				}
+				wAjax(param, function(result){
+					var info = result.data.info;
+					document.getElementById('name').innerHTML = info.mei_real_name;
+//					var self = plus.webview.currentWebview();
+////					var nview = self.getTitleNView();
+//					var style = {
+//						titleNView: {
+//							titleText: info.mei_real_name
+//						}
+//					}
+//					self.setStyle(style);
+				})
+			}
 
 			function toProfile() {
 				mui.openWindow({

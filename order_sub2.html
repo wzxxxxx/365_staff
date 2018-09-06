@@ -53,6 +53,7 @@
 			
 			#pullrefresh {
 				background: #efeff4;
+				padding-bottom: 150px;
 			}
 			
 			#shijian {
@@ -80,7 +81,6 @@
 				<div id="mui-template">
 					<script type="text/template" id="temp">
 						<% for(var i in record){ var item=record[i]; %>
-						<% if(item.ob_status==6 || item.ob_status==7){%>
 						<div class="mui-content" id="<%=item.ob_id%>">
 							<div>
 								<span>
@@ -109,7 +109,6 @@
 								<%=item.company_name%>
 							</div>
 						</div>
-						<%}%>
 						<%}%>
 					</script>
 
@@ -200,7 +199,7 @@
 				}
 				var staff_id = loginData.data.info.staff_id;
 				var getOrderParam = {
-					service: 'Orders.Order.GetListByStaff',
+					service: 'Jsapp.Order.CompleteOper',
 					os_staff_id: staff_id,
 					firstRow: isDown ? 1 : pageIndex,
 					listRows: 10

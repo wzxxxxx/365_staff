@@ -16,7 +16,8 @@
 				margin-top: 20px;
 				color: black;
 			}
-			.blk{
+			
+			.blk {
 				padding-top: 20px;
 				padding-bottom: 10px;
 				background: #2A333D;
@@ -51,78 +52,84 @@
 			</div>
 			<ul class="mui-table-view" id="mui-template">
 				<script type="text/template" id="temp">
-					<% for(var i in record){ var item=record[i]; %>
+					<% for(var i in record){ var item1=record[i]; %>
 					<li class="mui-table-view-cell mui-collapse mui-active">
 						<a class="mui-navigate-right" href="#">
-							<%=item.op_pay_time%>
+							<%=item1.time%>
 						</a>
-						<% for(var i in record){ var item2=record[i]; %>
-						<% if(item2.op_pay_time == item.op_pay_time){%>
+						<% for(var x in item1.list){ var item2=(item1.list)[x]; %>
 						<div class="mui-collapse-content">
 							<div class="mui-row">
 								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
 									<h5>订单商家</h5>
 									<h6>
-                                                <%=item2.company_name%>
+                                                <%=item2.jci_name%>
                                             </h6>
 								</div>
 								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
 									<h5>订单编号</h5>
 									<h6>
-                                                <%=item2.ob_number%>
+                                                <%=item2.obi_number%>
                                             </h6>
 								</div>
 								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
 									<h5>收入金额</h5>
 									<h6>
-                                                <%=item2.op_actual_price%>
+                                                <%=item2.jdp_price%>
                                             </h6>
 								</div>
 								<div class="mui-col-sm-3 mui-col-xs-3 mui-text-center ">
 									<h5>结算状态</h5>
-									<h6>未结算 </div>
-                                    </div>
+									<% if(item2.jdp_status == 1){%>
+									<h6>未结算 </h6>
+									<%} else if(item2.jdp_status==2){%>
+									<h6>已结算 </h6>
+									<%} else {%>
+									<h6>未结算 </h6>
 									<%}%>
- 								<%}%>
-                    </li>
-                    <%}%>
-                            </li>
-            </script>
-        </ul>
-        </div>
-        <script src="js/mui.min.js"></script>
-        <script type="text/javascript" src="js/arttmpl.js"></script>
-        <script type="text/javascript" src="js/app.js"></script>
-        <script type="text/javascript">
-            mui.plusReady(function () {
-                getIncomeList();
-            })
+								</div>
+							</div>
+						</div>
+						<%}%>
+					</li>
+					<%}%>
+					</li>
+				</script>
+			</ul>
+		</div>
+		<script src="js/mui.min.js"></script>
+		<script type="text/javascript" src="js/arttmpl.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+		<script type="text/javascript">
+			mui.plusReady(function() {
+				getIncomeList();
+			})
 
-            function getIncomeList() {
-                var loginData = JSON.parse(localStorage.getItem('login'));
-                if (!loginData) {
-                    return;
-                }
-                staff_id = loginData.data.info.staff_id;
-                var incomeParam = {
-                    service: 'Orders.Order.GetPriceByStaff',
-                    os_staff_id: staff_id,
-                    firstRow: 1,
-                    listRows: 10
+			function getIncomeList() {
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var staff_id = loginData.data.info.staff_id;
+				var incomeParam = {
+					service: 'Jsapp.Member.GetStaffPrice',
+					jce_id: staff_id,
+					firstRow: 1,
+					listRows: 10
 
-                }
-                wAjax(incomeParam, function (result) {
-                    var list = result.data.list;
-                    for (var i in list) {
-                        list[i].op_pay_time = new Date(1000 * list[i].op_pay_time).format("yyyy-MM-dd");
-                    }
-                    var str = template('temp', {
-                        "record": list
-                    });
-                    document.getElementById("mui-template").innerHTML = str;
-                });
-            }
-        </script>
-</body>
+				}
+				wAjax(incomeParam, function(result) {
+					var list = result.data.list;
+					//                  for (var i in list) {
+					//                      list[i].op_pay_time = new Date(1000 * list[i].op_pay_time).format("yyyy-MM-dd");
+					//                  }
+					var str = template('temp', {
+						"record": list
+					});
+					document.getElementById("mui-template").innerHTML = str;
+				});
+			}
+		</script>
+	</body>
 
 </html>

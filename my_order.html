@@ -28,39 +28,62 @@
 		<script type="text/javascript" src="js/webviewGroup.js"></script>
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript">
+			var list1 = [], list2 = [];
 			mui.plusReady(function(){
 				plus.webview.currentWebview().setStyle({
 						'popGesture': 'none'
 					});
-				getOrderList();
+				getPendingOrderList();
+//				initSubpages();
 			});
 
-			function getOrderList() {
+			function getPendingOrderList() {
 				var loginData = JSON.parse(localStorage.getItem('login'));
 				if(!loginData) {
 					return;
 				}
 				var staff_id = loginData.data.info.staff_id;
 				var getOrderParam = {
-					service: 'Orders.Order.GetListByStaff',
+					service: 'Jsapp.Order.PendingOper',
 					os_staff_id: staff_id,
 					firstRow: 1,
 					listRows: 10
 				};
 				wAjax(getOrderParam, function(result) {
-					var list = result.data.list;
-					initSubpages(list);
+					list1 = result.data.list;
+					getFinishedOrderList();
+//					initSubpages();
+//					initSubpages(list);
+				});
+			}
+			
+			function getFinishedOrderList(){
+				var loginData = JSON.parse(localStorage.getItem('login'));
+				if(!loginData) {
+					return;
+				}
+				var staff_id = loginData.data.info.staff_id;
+				var getOrderParam = {
+					service: 'Jsapp.Order.CompleteOper',
+					os_staff_id: staff_id,
+					firstRow: 1,
+					listRows: 10
+				};
+				wAjax(getOrderParam, function(result) {
+					list2 = result.data.list;
+//					getPendingOrderList();
+					initSubpages();
 				});
 			}
 
-			function initSubpages(data) {
+			function initSubpages() {
 				var self = plus.webview.currentWebview();
 				var group = new webviewGroup(self.id, {
 					items: [{
 						id: "order_sub1.html",
 						url: "order_sub1.html",
 						extras: {
-							list: data
+							list: list1
 						},
 						styles: {
 							top: '105px'
@@ -69,7 +92,7 @@
 						id: "order_sub2.html",
 						url: "order_sub2.html",
 						extras: {
-							list: data
+							list: list2
 						},
 						styles: {
 							top: '105px'

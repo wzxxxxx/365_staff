@@ -89,8 +89,8 @@
 				border-radius: 20px;
 			}
 			.mui-table-view-cell.mui-active{
-	background-color: white;
-}
+				background-color: white;
+			}
 		</style>
 	</head>
 
@@ -120,15 +120,15 @@
 					支付方式<span class="mui-pull-right" id="howtopay"></span>
 				</li>
 				<li class="mui-table-view-cell lastli">
-					<div class="mui-row">
+					<div class="mui-row" id="shoukuan">
 						<img src="images/ic_two_map1.png" />
 						<img src="images/calic_two_l.png" onclick="dial()"/>
 						<button type="button" class="mui-pull-right" onclick="getMoney()">收款</button>
 					</div>
 
-					<!--<a id="youhuiquan" class=" mui-text-center">
-						已支付0.01元
-					</a>-->
+					<a id="youhuiquan" class=" mui-text-center mui-hidden">
+						
+					</a>
 				</li>
 			</ul>
 		</div>
@@ -192,12 +192,42 @@
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					document.getElementById('name').innerHTML = info.user_contacts_name;
-					document.getElementById('time').innerHTML = info.user_predict_work_time;
+					document.getElementById('time').innerHTML = new Date(1000 * info.user_predict_work_time).format("yyyy-MM-dd hh:mm");
 					document.getElementById('project').innerHTML = info.goods[0].og_goods_name;
 					document.getElementById('address').innerHTML = info.user_contacts_province_name + info.user_contacts_city_name + info.user_contacts_county_name + info.user_contacts_address;
 					document.getElementById('mobile').innerHTML = info.user_contacts_phone;
 					document.getElementById('remark').innerHTML = info.ob_remark;
-					document.getElementById('howtopay').innerHTML = info.pay[0].op_pay_modo;
+					if(info.pay[0] && info.pay[0].op_pay_modo){
+					switch (info.pay[0].op_pay_modo){
+						case "1":
+							document.getElementById('howtopay').innerHTML = "支付宝在线";
+							break;
+						case "2":
+							document.getElementById('howtopay').innerHTML = "微信在线";
+							break;
+						case "3":
+							document.getElementById('howtopay').innerHTML = "微信扫码";
+							break;
+						case "4":
+							document.getElementById('howtopay').innerHTML = "支付宝扫码";
+							break;
+						case "5":
+							document.getElementById('howtopay').innerHTML = "现金";
+							break;
+						default:
+							break;
+					}
+					}
+					var ele = document.getElementById('youhuiquan');
+					var ele2 = document.getElementById('shoukuan');
+					if(info.ob_status == 6 || info.ob_status == 7 || info.ob_status == 8 || info.ob_status == 14) {
+						ele.classList.remove('mui-hidden');
+						ele.innerHTML = '已支付' + info.pay[0].op_actual_price + '元';
+						ele2.classList.add('mui-hidden');
+					} else {
+						ele2.classList.remove('mui-hidden');
+						ele.classList.add('mui-hidden');
+					}
 				})
 			}
 		</script>
