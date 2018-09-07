@@ -148,11 +148,11 @@
 
 			function relogin() {
 				localStorage.removeItem('login');
-				plus.webview.getWebviewById('login.html').show('pop-in', 300);
-				//					mui.openWindow({
-				//						url: 'login.html',
-				//						id: 'login.html'
-				//					})
+//				plus.webview.getWebviewById('login.html').show('pop-in', 300);
+									mui.openWindow({
+										url: 'login.html',
+										id: 'login.html'
+									})
 			}
 
 			function clearCache() {
@@ -231,6 +231,9 @@
 					document.getElementById('user_sex').innerHTML = info.mei_sex == 1 ? '男' : '女';
 					document.getElementById('user_birthday').innerHTML = new Date(1000 * info.mei_birth).format("yyyy-MM-dd");
 					document.getElementById('user_mobile').innerHTML = info.mbi_login_phone;
+					if(info.mei_head) {
+						document.getElementById('avatar').src = info.mei_head;
+					}
 				})
 			}
 		</script>

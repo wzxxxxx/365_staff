@@ -56,7 +56,7 @@
 				color: gray;
 			}
 			
-			#firstway{
+			#firstway {
 				height: 60px;
 				line-height: 40px;
 				color: red;
@@ -65,7 +65,7 @@
 				font-size: 16px;
 			}
 			
-			#secondway{
+			#secondway {
 				background: red;
 				color: white;
 				height: 60px;
@@ -74,7 +74,8 @@
 				border: none;
 				font-size: 16px;
 			}
-			#thirdway{
+			
+			#thirdway {
 				background: red;
 				color: white;
 				height: 60px;
@@ -83,10 +84,11 @@
 				border: none;
 				font-size: 16px;
 			}
-			.mui-row img{
+			
+			.mui-row img {
 				height: 20px;
 				width: 20px;
-				vertical-align:middle;
+				vertical-align: middle;
 				margin-right: 10px;
 				padding-bottom: 3px;
 			}
@@ -107,10 +109,10 @@
 				工作时长<span class="mui-pull-right" id="time"></span>
 			</div>
 			<div class="mui-row split">
-				实收金额<input type="number" id="price"/>元
+				实收金额<input type="number" id="price" />元
 			</div>
 			<div class="mui-row split">
-				备注信息<input type="number" placeholder="请输入备注信息（如是否使用优惠券）" class="long" />
+				备注信息<input type="number" placeholder="请输入备注信息（如是否使用优惠券）" class="long" id="remark"/>
 			</div>
 			<div class="mui-row split">
 				选择客户支付方式
@@ -173,18 +175,43 @@
 				});
 			})
 			var ob_number = '';
-			function finish(){
+
+			function finish() {
+				if(!(document.getElementById('price').value)) {
+					mui.toast('请填写实收金额！');
+					return;
+				}
+				var wt = plus.nativeUI.showWaiting();
+				var self = plus.webview.currentWebview();
+				var order_id = self.order_id || '';
 				var param = {
 					service: 'Jsapp.Order.GetCashPayment',
 					ob_number: ob_number
 				}
-				wAjax(param, function(result){
-					plus.webview.getWebviewById('order_detail.html').reload();
-					setTimeout(function(){
-						mui.back();
-					}, 200);
+				var param2 = {
+					service: 'Jsapp.Order.SetPayPrice',
+					ob_number: ob_number,
+					op_original_price: op_original_price,
+					op_actual_price: document.getElementById('price').value,
+					
+				}
+				var remark = document.getElementById('remark').value.trim();
+				if(remark) param2.ob_customize_1 = remark;
+				wAjax(param2, function(result) {
+					wAjax(param, function(result) {
+						mui.fire(plus.webview.getWebviewById('order_detail.html'), 'order_id', {
+							order_id: order_id
+						});
+						setTimeout(function() {
+							plus.nativeUI.closeWaiting();
+							mui.back();
+						}, 200);
+					})
 				})
+
 			}
+
+			var op_original_price = '';
 
 			function getInfo(order_id) {
 				var loginData = JSON.parse(localStorage.getItem('login'));
@@ -197,34 +224,50 @@
 					ob_id: order_id,
 					os_staff_id: staff_id
 				}
+				
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					ob_number = info.ob_number;
+					op_original_price = info.pay[0].op_original_price;
 					document.getElementById('service').innerHTML = info.goods[0].og_goods_name;
 					document.getElementById('time').innerHTML = dateDiff(info.pay[0].op_work_end_time, info.pay[0].op_work_start_time);
 				})
+
 			}
-			
-			function goEWM(){
+
+			function goEWM() {
 				var self = plus.webview.currentWebview();
 				var order_id = self.order_id || '';
-				if(!(document.getElementById('price').value)){
+				if(!(document.getElementById('price').value)) {
 					mui.toast('请填写实收金额！');
 					return;
 				}
-				mui.openWindow({
-					url: 'erweima.html',
-					id: 'erweima.html',
-					styles: {
-						titleNView: {
-							titleText: '支付',
-							backgroundColor: 'white'
+				var param2 = {
+					service: 'Jsapp.Order.SetPayPrice',
+					ob_number: ob_number,
+					op_original_price: op_original_price,
+					op_actual_price: document.getElementById('price').value
+				}
+				var remark = document.getElementById('remark').value.trim();
+				if(remark) param2.ob_customize_1 = remark;
+				wAjax(param2, function(result) {
+					var url = result.data.info.url + '&&pay_mode=1';
+					mui.openWindow({
+						url: url,
+						id: 'erweima.html',
+						styles: {
+							titleNView: {
+								titleText: '支付',
+								backgroundColor: 'white'
+							}
 						}
-					},
-					extras: {
-						order_id: order_id
-					}
+//						extras: {
+////							order_id: order_id,
+//							url: result.data.info.url
+//						}
+					})
 				})
+
 			}
 
 			//时间戳相减

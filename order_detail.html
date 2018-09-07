@@ -219,6 +219,7 @@
 								break;
 						}
 					}
+					ob_number = info.ob_number;
 					var ele = document.getElementById('youhuiquan');
 					var ele2 = document.getElementById('shoukuan');
 					var btn = document.getElementById('btn');
@@ -232,24 +233,24 @@
 							ele2.classList.remove('mui-hidden');
 							if(info.ob_status == 3) {
 								btn.innerHTML = '开始工作';
-								btn.addEventListener('tap', function() {
-									startWork(info.ob_number)
-								});
+//								btn.removeEventListener('tap');
+								btn.addEventListener('tap', startWork);
 							} else if(info.ob_status == 4) {
 								btn.innerHTML = '结束工作';
-								btn.addEventListener('tap', function() {
-									finishWork(info.ob_number)
-								});
+								btn.removeEventListener('tap', startWork);
+								btn.addEventListener('tap', finishWork);
 							} else {
 								btn.innerHTML = '收款';
+								btn.removeEventListener('tap', finishWork);
 								btn.addEventListener('tap', goFinishService);
 							}
 						}
 					}
+					plus.nativeUI.closeWaiting();
 				})
 			}
 
-			function startWork(ob_number) {
+			function startWork() {
 				var wt = plus.nativeUI.showWaiting();
 				var param = {
 					service: 'Jsapp.Order.StartWorking',
@@ -257,14 +258,18 @@
 				}
 				wAjax(param, function(result) {
 					mui.toast('提交成功!');
-					plus.webview.currentWebview().reload();
-					setTimeout(function() {
-						plus.nativeUI.closeWaiting();
-					}, 200);
+//					plus.nativeUI.closeWaiting();
+					getOrderDetail(order_id);
+//					plus.webview.currentWebview().reload();
+//					setTimeout(function() {
+//						
+//					}, 200);
 				})
 			}
+			
+			var ob_number = '';
 
-			function finishWork(ob_number) {
+			function finishWork() {
 				mui.confirm('确定吗?', '结束任务', ['是', '否'], function(event) {
 					if(event.index == 0) {
 						var wt = plus.nativeUI.showWaiting();
@@ -274,10 +279,12 @@
 						}
 						wAjax(param, function(result) {
 							mui.toast('提交成功!');
-							plus.webview.currentWebview().reload();
-							setTimeout(function() {
-								plus.nativeUI.closeWaiting();
-							}, 200);
+//							plus.nativeUI.closeWaiting();
+							getOrderDetail(order_id);
+//							plus.webview.currentWebview().reload();
+//							setTimeout(function() {
+//								
+//							}, 200);
 						})
 					}
 				});

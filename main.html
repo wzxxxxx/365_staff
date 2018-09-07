@@ -122,6 +122,22 @@
 				getStatistics();
 				getName();
 				getPosition();
+				window.addEventListener('show', function(event) {
+					if(event) {
+						getName();
+						getPosition();
+					}
+				});
+				//				window.addEventListener()
+
+				//				var loginData = JSON.parse(localStorage.getItem('login'));
+				//				var timer = setInterval(function() {
+				//					if(loginData) {
+				//						clearInterval(timer);
+				//						getName();
+				//						getPosition();
+				//					}
+				//				}, 20);
 			});
 
 			function getName() {
