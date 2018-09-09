@@ -99,15 +99,15 @@
 			</div>
 			<div class="middle">
 				<div class="mui-row">
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_order" onclick="toOrders()">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_order">
 					</div>
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_income" onclick="toIncome()">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_income">
 					</div>
 				</div>
 				<div class="mui-row">
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_profile" onclick="toProfile()">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="my_profile">
 					</div>
-					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="contact_service" onclick="dial()">
+					<div class="mui-col-sm-6 mui-col-xs-6 main-img" id="contact_service">
 					</div>
 				</div>
 			</div>
@@ -119,6 +119,54 @@
 				plus.webview.currentWebview().setStyle({
 					'popGesture': 'none'
 				});
+				mui.preload({
+					url: 'my_profile.html',
+					id: 'my_profile.html',
+					styles: {
+						titleNView: {
+							titleText: '我的资料',
+							backgroundColor: '#F97160',
+							titleColor: '#FFFFFF',
+							autoBackButton: true,
+							buttons: [{
+								color: 'white',
+								text: '编辑',
+								onclick: goEditProfile
+							}]
+						},
+						bounceBackground: '#F97160',
+						bounce: 'vertical',
+						scrollIndicator: 'none'
+					}
+				});
+				mui.preload({
+					url: 'my_order.html',
+					id: 'my_order.html',
+					styles: {
+						titleNView: {
+							titleText: '我的订单',
+							backgroundColor: 'white',
+							autoBackButton: true
+						},
+						bounce: 'vertical',
+						scrollIndicator: 'none'
+					}
+				});
+				mui.preload({
+					url: 'my_income.html',
+					id: 'my_income.html',
+					styles: {
+						titleNView: {
+							titleText: '我的收入',
+							backgroundColor: '#2A333D',
+							titleColor: '#FFFFFF',
+							autoBackButton: true
+						},
+						bounceBackground: '#2A333D',
+						bounce: 'vertical',
+						scrollIndicator: 'none'
+					}
+				});
 				getStatistics();
 				getName();
 				getPosition();
@@ -128,16 +176,10 @@
 						getPosition();
 					}
 				});
-				//				window.addEventListener()
-
-				//				var loginData = JSON.parse(localStorage.getItem('login'));
-				//				var timer = setInterval(function() {
-				//					if(loginData) {
-				//						clearInterval(timer);
-				//						getName();
-				//						getPosition();
-				//					}
-				//				}, 20);
+				document.getElementById('my_order').addEventListener('tap', toOrders);
+				document.getElementById('my_income').addEventListener('tap', toIncome);
+				document.getElementById('my_profile').addEventListener('tap', toProfile);
+				document.getElementById('contact_service').addEventListener('tap', dial);
 			});
 
 			function getName() {
@@ -153,14 +195,6 @@
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					document.getElementById('name').innerHTML = info.mei_real_name + '<div class="mui-pull-right" id="message" onclick="toMessage()">消息</div>';
-					//					var self = plus.webview.currentWebview();
-					////					var nview = self.getTitleNView();
-					//					var style = {
-					//						titleNView: {
-					//							titleText: info.mei_real_name
-					//						}
-					//					}
-					//					self.setStyle(style);
 				})
 			}
 
@@ -178,36 +212,47 @@
 			}
 
 			function toProfile() {
-				mui.openWindow({
-					url: 'my_profile.html',
-					id: 'my_profile.html',
-					styles: {
-						titleNView: {
-							titleText: '我的资料',
-							backgroundColor: '#F97160',
-							titleColor: '#FFFFFF',
-							buttons: [{
-								color: 'white',
-								text: '编辑',
-								onclick: goEditProfile
-							}]
-						},
-						bounceBackground: '#F97160'
-					}
-				});
+				var wv = plus.webview.getWebviewById('my_profile.html');
+				if(wv) {
+					wv.show('pop-in', 300);
+				} else {
+					mui.openWindow({
+						url: 'my_profile.html',
+						id: 'my_profile.html',
+						styles: {
+							titleNView: {
+								titleText: '我的资料',
+								backgroundColor: '#F97160',
+								titleColor: '#FFFFFF',
+								buttons: [{
+									color: 'white',
+									text: '编辑',
+									onclick: goEditProfile
+								}]
+							},
+							bounceBackground: '#F97160'
+						}
+					});
+				}
 			}
 
 			function toOrders() {
-				mui.openWindow({
-					url: 'my_order.html',
-					id: 'my_order.html',
-					styles: {
-						titleNView: {
-							titleText: '我的订单',
-							backgroundColor: 'white'
+				var wv = plus.webview.getWebviewById('my_order.html');
+				if(wv) {
+					wv.show('pop-in', 300);
+				} else {
+					mui.openWindow({
+						url: 'my_order.html',
+						id: 'my_order.html',
+						styles: {
+							titleNView: {
+								titleText: '我的订单',
+								backgroundColor: 'white'
+							}
 						}
-					}
-				});
+					});
+				}
+
 			}
 
 			function goEditProfile() {
@@ -246,18 +291,23 @@
 			}
 
 			function toIncome() {
-				mui.openWindow({
-					url: 'my_income.html',
-					id: 'my_income.html',
-					styles: {
-						titleNView: {
-							titleText: '我的收入',
-							backgroundColor: '#2A333D',
-							titleColor: '#FFFFFF',
-						},
-						bounceBackground: '#2A333D'
-					}
-				})
+				var wv = plus.webview.getWebviewById('my_income.html');
+				if(wv) {
+					wv.show('pop-in', 300);
+				} else {
+					mui.openWindow({
+						url: 'my_income.html',
+						id: 'my_income.html',
+						styles: {
+							titleNView: {
+								titleText: '我的收入',
+								backgroundColor: '#2A333D',
+								titleColor: '#FFFFFF',
+							},
+							bounceBackground: '#2A333D'
+						}
+					})
+				}
 			}
 
 			function getPosition() {
@@ -278,7 +328,7 @@
 
 					})
 				}, function(e) {
-					alert('Geolocation error: ' + e.message);
+					console.log('Geolocation error: ' + e.message);
 					if(e.code == 1) {
 						mui.alert('请求位置权限失败!', '请开启位置权限!', '好', function() {
 

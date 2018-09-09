@@ -101,7 +101,7 @@
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" onclick="goChangePsw()">
+					<a class="mui-navigate-right" id="changepsd">
 						修改密码
 					</a>
 				</li>
@@ -109,7 +109,7 @@
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" onclick="goAboutUs()">
+					<a class="mui-navigate-right" id="aboutus">
 						关于我们
 					</a>
 				</li>
@@ -117,14 +117,14 @@
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a class="mui-navigate-right" onclick="clearCache()" id="clearCache">
+					<a class="mui-navigate-right" id="clearCache">
 						清除缓存
 					</a>
 				</li>
 			</ul>
 			<ul class="mui-table-view">
 				<li class="mui-table-view-cell">
-					<a class=" mui-text-center" onclick="relogin()">
+					<a class=" mui-text-center" id="relogin">
 						退出登录
 					</a>
 				</li>
@@ -140,6 +140,10 @@
 				}
 				mbi_number = loginData.data.info.user_number;
 				getStaffInfo(mbi_number);
+				document.getElementById('changepsd').addEventListener('tap', goChangePsw);
+				document.getElementById('aboutus').addEventListener('tap', goAboutUs);
+				document.getElementById('clearCache').addEventListener('tap', clearCache);
+				document.getElementById('relogin').addEventListener('tap', relogin);
 
 				initCacheSize();
 
@@ -203,6 +207,19 @@
 						bounceBackground: '#FFFFFF'
 					}
 				});
+			}
+			
+			function goEditProfile() {
+				mui.openWindow({
+					url: 'edit_profile.html',
+					id: 'edit_profile.html',
+					styles: {
+						titleNView: {
+							titleText: '会员信息',
+							backgroundColor: 'white'
+						}
+					}
+				})
 			}
 
 			function goChangePsw() {

@@ -132,13 +132,13 @@
 					<a class="mui-navigate-right"><img src="images/ic_wechar_pay.png" />用户支付</a>
 				</li>
 			</ul>
-			<button type="button" class="mui-row split mui-text-center mui-hidden" id="firstway" onclick="goEWM()">
+			<button type="button" class="mui-row split mui-text-center mui-hidden" id="firstway">
 				<img src="images/ic_scan.png"/>二维码支付
 			</button>
-			<button type="button" class="mui-row split mui-text-center mui-hidden" id="secondway" onclick="finish()">
+			<button type="button" class="mui-row split mui-text-center mui-hidden" id="secondway">
 				确认客户已付款
 			</button>
-			<button type="button" class="mui-row split mui-text-center mui-hidden" id="thirdway" onclick="finish()">
+			<button type="button" class="mui-row split mui-text-center mui-hidden" id="thirdway">
 				用户APP支付
 			</button>
 		</div>
@@ -173,6 +173,9 @@
 					}
 					console.log("当前选中的为：" + e.detail.el.innerText);
 				});
+				document.getElementById('firstway').addEventListener('tap', goEWM);
+				document.getElementById('secondway').addEventListener('tap', finish);
+				document.getElementById('thirdway').addEventListener('tap', finish);
 			})
 			var ob_number = '';
 
@@ -228,9 +231,9 @@
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					ob_number = info.ob_number;
-					op_original_price = info.pay[0].op_original_price;
+					if(info.pay && info.pay[0]) op_original_price = info.pay[0].op_original_price;
 					document.getElementById('service').innerHTML = info.goods[0].og_goods_name;
-					document.getElementById('time').innerHTML = dateDiff(info.pay[0].op_work_end_time, info.pay[0].op_work_start_time);
+					if(info.pay && info.pay[0]) document.getElementById('time').innerHTML = dateDiff(info.pay[0].op_work_end_time, info.pay[0].op_work_start_time);
 				})
 
 			}
