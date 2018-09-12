@@ -9,8 +9,6 @@
 		<style>
 			.mui-table-view {
 				background: #efeff4;
-				width: 95%;
-				margin-left: 10px;
 				-webkit-box-shadow: 0 0 5px antiquewhite;
 				-moz-box-shadow: 0 0 5px antiquewhite;
 				box-shadow: 0 0 5px antiquewhite;
@@ -26,6 +24,7 @@
 			
 			.mui-table-view-cell {
 				background: white;
+				margin: 0 10px;
 			}
 			
 			.mui-table-view-cell:after {
@@ -38,7 +37,6 @@
 				background-size: cover;
 				height: 160px;
 				padding-top: 20px;
-				margin: 0 -10px;
 			}
 			
 			.span-center {
@@ -137,15 +135,15 @@
 		<script type="text/javascript" src="js/app.js"></script>
 		<script type="text/javascript">
 			//重写返回逻辑，返回时隐藏详情页webview
-			mui.back = function() {
-				plus.webview.currentWebview().hide("auto", 300);
-			}
+//			mui.back = function() {
+//				plus.webview.currentWebview().hide("auto", 300);
+//			}
 			//窗口隐藏时，重置页面数据
 			mui.plusReady(function() {
-				var self = plus.webview.currentWebview();
-				self.addEventListener("hide", function(e) {
-					window.scrollTo(0, 0); //重置滚动条位置
-				}, false);
+//				var self = plus.webview.currentWebview();
+//				self.addEventListener("hide", function(e) {
+//					window.scrollTo(0, 0); //重置滚动条位置
+//				}, false);
 			})
 
 			var order_id = '';
