@@ -148,7 +148,9 @@
 				var self = plus.webview.currentWebview();
 				var list = self.list || [];
 				fillData(list, true);
-				var webview_detail = mui.preload({
+				var webview_detail = plus.webview.getWebviewById('order_detail.html');
+				if(!webview_detail){
+					webview_detail = mui.preload({
 					url: 'order_detail.html',
 					id: 'order_detail.html',
 					styles: {
@@ -163,6 +165,8 @@
 						scrollIndicator: 'none'
 					}
 				});
+				}
+				
 
 				mui("#mui-template").on('tap', '.mui-content', function(e) {
 					var id = this.getAttribute("id");

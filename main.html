@@ -119,10 +119,13 @@
 				plus.webview.currentWebview().setStyle({
 					'popGesture': 'none'
 				});
+//				var myprofile = plus.webview.getWebviewById('my_profile.html');
+//				myprofile ? myprofile.reload() : 
 				mui.preload({
 					url: 'my_profile.html',
 					id: 'my_profile.html',
 					styles: {
+						render: "always",
 						titleNView: {
 							titleText: '我的资料',
 							backgroundColor: '#F97160',
@@ -139,10 +142,13 @@
 						scrollIndicator: 'none'
 					}
 				});
+//				var myorder = plus.webview.getWebviewById('my_order.html');
+//				myorder ? myorder.reload() : 
 				mui.preload({
 					url: 'my_order.html',
 					id: 'my_order.html',
 					styles: {
+						render: "always",
 						titleNView: {
 							titleText: '我的订单',
 							backgroundColor: 'white',
@@ -152,10 +158,13 @@
 						scrollIndicator: 'none'
 					}
 				});
+//				var myincome = plus.webview.getWebviewById('my_income.html');
+//				myincome ? myincome.reload() : 
 				mui.preload({
 					url: 'my_income.html',
 					id: 'my_income.html',
 					styles: {
+						render: "always",
 						titleNView: {
 							titleText: '我的收入',
 							backgroundColor: '#2A333D',
@@ -167,13 +176,13 @@
 						scrollIndicator: 'none'
 					}
 				});
-				getStatistics();
-				getName();
-				getPosition();
+//				getStatistics();
+//				getName();
+//				getPosition();
 				window.addEventListener('show', function(event) {
 					if(event) {
 						getName();
-						getPosition();
+//						getPosition();
 					}
 				});
 				document.getElementById('my_order').addEventListener('tap', toOrders);
@@ -195,6 +204,7 @@
 				wAjax(param, function(result) {
 					var info = result.data.info;
 					document.getElementById('name').innerHTML = info.mei_real_name + '<div class="mui-pull-right" id="message" onclick="toMessage()">消息</div>';
+					getStatistics();
 				})
 			}
 
@@ -287,6 +297,7 @@
 					document.getElementById('income').innerHTML = info.countPrice + " 元";
 					document.getElementById('all').innerHTML = '累计接单' + info.orderCount + '次';
 					document.getElementById('today').innerHTML = '今日收入' + info.day_price + '元';
+					getPosition();
 				})
 			}
 

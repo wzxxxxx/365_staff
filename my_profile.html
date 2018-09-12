@@ -149,14 +149,12 @@
 
 			})
 
-
 			function relogin() {
 				localStorage.removeItem('login');
-//				plus.webview.getWebviewById('login.html').show('pop-in', 300);
-									mui.openWindow({
-										url: 'login.html',
-										id: 'login.html'
-									})
+				mui.openWindow({
+					url: 'login.html',
+					id: 'login.html'
+				})
 			}
 
 			function clearCache() {
@@ -208,7 +206,7 @@
 					}
 				});
 			}
-			
+
 			function goEditProfile() {
 				mui.openWindow({
 					url: 'edit_profile.html',
